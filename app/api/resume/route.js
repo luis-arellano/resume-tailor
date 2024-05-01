@@ -38,46 +38,57 @@ export async function POST(req) {
             // I chose to bypass the type checks.
             const pdfParser = new (PDFParser )(null, 1);
       
-            // See pdf2json docs for more info on how the below works.
-            pdfParser.on('pdfParser_dataError', (errData) =>
-              console.log(errData.parserError)
-            );
+            // // See pdf2json docs for more info on how the below works.
+            // pdfParser.on('pdfParser_dataError', (errData) =>
+            //   console.log(errData.parserError)
+            // );
       
-            pdfParser.on('pdfParser_dataReady', async () => {
-              // console.log((pdfParser as any).getRawTextContent());
-              parsedText = (pdfParser).getRawTextContent();
-              const instructions = 'Please extract the following information from the attached resume:   1. Contact information, Name, Email, Phone, Location.  2. Experience  (including company, title, description, responsibilities, Duration in dates, ) 3. Education (Degree, school, duration)  4. Skills, Languages, Other information. Structure your response In Json';
-              const message = {role:'user', content: parsedText+' '+instructions}
-              console.log(' INSTRUCTIONS FOR LLM: ', message);
-              const llm_response = await sendOpenAi([message], 'default_user', 4000, 0.1)
-              console.log(llm_response);
-            });
-            pdfParser.loadPDF(tempFilePath);
+            // pdfParser.on('pdfParser_dataReady', async () => {
+            //   // console.log((pdfParser as any).getRawTextContent());
+            //   parsedText = (pdfParser).getRawTextContent();
+            //   const instructions = 'Please extract the following information from the attached resume:   1. Contact information, Name, Email, Phone, Location.  2. Experience  (including company, title, Duration in dates, overview, responsibilities) 3. Education (Degree, school, duration)  4. Skills, Languages, Other information. Structure your response In Json';
+            //   const message = {role:'user', content: parsedText+' '+instructions}
+            //   const llm_response = await sendOpenAi([message], 'default_user', 4000, 0.1)
+            //   console.log(llm_response);
+
+            //   // Continue handling only after LLM response is received
+            //   const response = new NextResponse(JSON.stringify(llm_response));
+            //   response.headers.set('FileName', fileName);
+            //   response.headers.set('Content-Type', 'application/json'); // Ensure the correct content type is set for JSON response
+            //   return response;
+            // });
+
+            return new Promise((resolve, reject) => {
+                pdfParser.on('pdfParser_dataError', errData => {
+                    console.error(errData.parserError);
+                    resolve(new NextResponse('Error processing PDF', { status: 500 }));
+                });
+    
+                pdfParser.on('pdfParser_dataReady', async () => {
+                    const parsedText = pdfParser.getRawTextContent();
+                    const instructions = 'Please extract the following information from the attached resume: Contact information, Name, Email, Phone, Location; Experience (including company, title, Duration in dates, overview, responsibilities); Education (Degree, school, duration); Skills, Languages, Other information. Structure your response In Json';
+                    const message = { role: 'user', content: parsedText + ' ' + instructions };
+                    console.log('INSTRUCTIONS FOR LLM: ', message);
+    
+                    try {
+                        const llmResponse = await sendOpenAi([message], 'default_user', 4000, 0.1);
+                        console.log('LLM Response:', llmResponse);
+                        const response = new NextResponse(JSON.stringify(llmResponse));
+                        response.headers.set('FileName', fileName);
+                        response.headers.set('Content-Type', 'application/json');
+                        resolve(response);
+                    } catch (error) {
+                        console.error('Error calling LLM:', error);
+                        resolve(new NextResponse('Error calling LLM', { status: 500 }));
+                    }
+                });
+                pdfParser.loadPDF(tempFilePath);
+             }); 
         } else {
           console.log('Uploaded file is not in the expected format.');
         }
       } else {
         console.log('No files found.');
+        return new NextResponse('No files found.', { status: 400 });
       }
-
-      const response = new NextResponse(parsedText);
-      response.headers.set('FileName', fileName);
-      return response;
     }
-
-    // if(!file || file.type !== 'application/pdf'){
-    //     NextResponse.json({ error: "No PDF file provided or wrong file type." }, { status: 400 });
-    // }
-
-    // try {
-    //     const bytes = await file.arrayBuffer();
-    //     const buffer = Buffer.from(bytes);
-    //     console.log('content: ', buffer);
-
-    // }
-    // catch(error){
-    //     console.error('Error parsing PDF: ', error);
-    //     return NextResponse.json({ error: 'failed to parse pdf'}, { status: 500 });
-    // }
-    
-// }
