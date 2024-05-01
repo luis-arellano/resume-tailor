@@ -19,17 +19,22 @@
     "eslint-config-next": "13.4.19",
     "form-data": "^4.0.0",
     "mailgun.js": "^9.4.1",
+    "mammoth": "^1.7.2",
     "next": "^14.1.4",
     "next-plausible": "^3.12.0",
     "next-sitemap": "^4.2.3",
     "nextjs-toploader": "^1.6.11",
     "nodemailer": "^6.9.13",
+    "pdf-parse": "^1.1.1",
+    "pdf2json": "^3.1.1",
+    "pdfjs-dist": "^4.1.392",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-syntax-highlighter": "^15.5.0",
     "react-tooltip": "^5.26.3",
-    "stripe": "^13.11.0"
+    "stripe": "^13.11.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
