@@ -3,6 +3,9 @@ import { promises as fs } from 'fs'; // To save the file temporarily
 import { v4 as uuidv4 } from 'uuid'; // To generate a unique filename
 import PDFParser from 'pdf2json'; // To parse the pdf
 import { sendOpenAi } from "@/libs/gpt";
+import { cookies } from "next/headers";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+
 
 export async function POST(req) {
 
@@ -37,27 +40,17 @@ export async function POST(req) {
             // You can either modify the type definitions or bypass the type checks.
             // I chose to bypass the type checks.
             const pdfParser = new (PDFParser )(null, 1);
-      
-            // // See pdf2json docs for more info on how the below works.
-            // pdfParser.on('pdfParser_dataError', (errData) =>
-            //   console.log(errData.parserError)
-            // );
-      
-            // pdfParser.on('pdfParser_dataReady', async () => {
-            //   // console.log((pdfParser as any).getRawTextContent());
-            //   parsedText = (pdfParser).getRawTextContent();
-            //   const instructions = 'Please extract the following information from the attached resume:   1. Contact information, Name, Email, Phone, Location.  2. Experience  (including company, title, Duration in dates, overview, responsibilities) 3. Education (Degree, school, duration)  4. Skills, Languages, Other information. Structure your response In Json';
-            //   const message = {role:'user', content: parsedText+' '+instructions}
-            //   const llm_response = await sendOpenAi([message], 'default_user', 4000, 0.1)
-            //   console.log(llm_response);
 
-            //   // Continue handling only after LLM response is received
-            //   const response = new NextResponse(JSON.stringify(llm_response));
-            //   response.headers.set('FileName', fileName);
-            //   response.headers.set('Content-Type', 'application/json'); // Ensure the correct content type is set for JSON response
-            //   return response;
-            // });
 
+            // Instantiate connection with Supabase
+            const cookieStore = cookies();
+            const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+            const user_id = session?.user?.id
+
+      
             return new Promise((resolve, reject) => {
                 pdfParser.on('pdfParser_dataError', errData => {
                     console.error(errData.parserError);
@@ -73,6 +66,24 @@ export async function POST(req) {
                     try {
                         const llmResponse = await sendOpenAi([message], 'default_user', 4000, 0.1);
                         console.log('LLM Response:', llmResponse);
+                        let jsonLlmResponse = JSON.parse(llmResponse);
+
+                        // Save to Supabase
+                        const {status, error} = await supabase
+                          .from('resumes')
+                          .insert([{
+                            user_id: user_id,
+                            file_name: fileName,
+                            resume_data: jsonLlmResponse
+                            }
+                          ]);
+                        console.log('SUPABASE STATUS: ', status);
+                        console.log('SUPABASE error: ', error);
+                        if (error) {
+                          console.error('Error inserting into Supabase:', error);
+                          throw error;
+                        }
+
                         const response = new NextResponse(JSON.stringify(llmResponse));
                         response.headers.set('FileName', fileName);
                         response.headers.set('Content-Type', 'application/json');
