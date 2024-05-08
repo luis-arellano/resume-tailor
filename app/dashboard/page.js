@@ -2,11 +2,27 @@
 import ButtonAccount from "@/components/ButtonAccount";
 import { useState } from 'react';
 import apiClient from "@/libs/api";
+import { useEffect } from "react";
 
 export const dynamic = "force-dynamic";
 
 export default function Dashboard() {
   const [file, setFile] = useState(null);
+  const [resumes, setResumes] = useState([]);
+
+  // Get resumes associated with the user.
+  useEffect(() => {
+    const fetchResumes = async () => {
+      try {
+        const response = await apiClient.get('/resume/get');
+        setResumes(response.data); // Assuming the response data is the array of resumes
+        console.log('RESPONSE: ', response);
+      } catch (error) {
+        console.error('Error fetching resumes:', error);
+      }
+    };
+    fetchResumes();
+  }, []);
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -36,7 +52,7 @@ export default function Dashboard() {
 
       
       // Assuming you have an endpoint to handle the file upload
-      const response = await apiClient.post('/resume', formData);
+      const response = await apiClient.post('/resume/post', formData);
 
       if (response) {
         console.log('File uploaded successfully:', response);
