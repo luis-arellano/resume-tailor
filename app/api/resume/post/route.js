@@ -5,7 +5,7 @@ import PDFParser from 'pdf2json'; // To parse the pdf
 import { sendOpenAi } from "@/libs/gpt";
 import { cookies } from "next/headers";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-
+import { RESUME_SCHEMA } from "@/libs/gpt";
 
 export async function POST(req) {
 
@@ -59,7 +59,8 @@ export async function POST(req) {
     
                 pdfParser.on('pdfParser_dataReady', async () => {
                     const parsedText = pdfParser.getRawTextContent();
-                    const instructions = 'Please extract the following information from the attached resume: Contact information, Name, Email, Phone, Location; Experience (including company, title, Duration in dates, overview, responsibilities); Education (Degree, school, duration); Skills, Languages, Other information. Structure your response In Json';
+                    // const instructions = 'Please extract the following information from the attached resume: contact_information, name, email, phone, location; experience (including company, title, Duration in dates, overview, responsibilities); Education (Degree, school, duration); Skills, Languages, Other information. Structure your response In Json';
+                    const instructions = `Summarize the text provided into a JSON with the following structure ${RESUME_SCHEMA}`
                     const message = { role: 'user', content: parsedText + ' ' + instructions };
                     console.log('INSTRUCTIONS FOR LLM: ', message);
     

@@ -3,6 +3,7 @@ import ButtonAccount from "@/components/ButtonAccount";
 import { useState } from 'react';
 import apiClient from "@/libs/api";
 import { useEffect } from "react";
+import ResumeDisplay from "./components/resume_display";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,7 @@ export default function Dashboard() {
     const fetchResumes = async () => {
       try {
         const response = await apiClient.get('/resume/get');
-        setResumes(response.data); // Assuming the response data is the array of resumes
+        setResumes(response); // Assuming the response data is the array of resumes
         console.log('RESPONSE: ', response);
       } catch (error) {
         console.error('Error fetching resumes:', error);
@@ -76,6 +77,9 @@ export default function Dashboard() {
             Upload Resume
           </button>
         </div>
+        {resumes.map(resume => (
+        <ResumeDisplay key={resume.file_name} resume={resume.resume_data} />
+      ))}
       </section>
     </main>
   );
