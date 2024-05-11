@@ -20,3 +20,24 @@ progress::-webkit-progress-value {
     @apply !capitalize;
   }
 }
+
+/* Ensures the div follows an A4 page */
+.a4-size {
+  width: 210mm;
+  /* height: 297mm; */
+  padding: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: adds shadow for better visibility on screen */
+  position: relative;
+  overflow: hidden; /* Ensures no content spills over */
+}
+
+@media print {
+  .a4-size {
+    box-shadow: none; /* Removes shadow when printing */
+    overflow: visible;
+    width: 100%;
+  }
+}
