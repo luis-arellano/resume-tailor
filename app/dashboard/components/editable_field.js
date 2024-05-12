@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 
 const EditableField = ({ 
     value,
@@ -11,6 +11,8 @@ const EditableField = ({
     }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [localValue, setLocalValue] = useState(value);
+  const inputRef = useRef(null); // Create a ref for the input element
+
 
   useEffect(() => {
     setLocalValue(value);
@@ -18,6 +20,33 @@ const EditableField = ({
 
   const handleInputChange = (e) => {
     setLocalValue(e.target.value);
+  };
+
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus(); // Focus the input when it becomes editable
+    }
+  }, [isEditing]); // Dependency on isEditing ensures this runs only when it changes
+
+  const handleTagClick = (e) => {
+    setIsEditing(true);
+    // Delay setting focus to ensure the input is visible and rendered
+    setTimeout(() => {
+      if (inputRef.current) {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        try {
+          // Attempt to set the selection to the point where the user clicked
+          range.setStart(inputRef.current.childNodes[0], e.nativeEvent.offsetX);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (error) {
+          // Fallback to setting focus at the end of the input if the above fails
+          inputRef.current.focus();
+        }
+      }
+    }, 0);
   };
 
   const handleBlur = () => {
@@ -32,6 +61,7 @@ const EditableField = ({
   if (isEditing) {
     return isTextArea ? (
       <textarea
+        ref={inputRef}
         className= {`editable-textarea ${className}`}
         value={localValue}
         onChange={handleInputChange}
@@ -41,6 +71,7 @@ const EditableField = ({
       />
     ) : (
       <input
+        ref={inputRef}
         className={`editable-input ${className}`}
         type="text"
         value={localValue}
@@ -53,7 +84,7 @@ const EditableField = ({
   }
 
   return (
-    <Tag onClick={() => setIsEditing(true)} className={className} style={{ cursor: 'text'}}>
+    <Tag onClick={handleTagClick} className={className} style={{ cursor: 'text'}}>
       {value || placeholder}
     </Tag>
   );

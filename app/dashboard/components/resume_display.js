@@ -1,31 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import EditableField from './editable_field';
+import _ from 'lodash';  // Import lodash
+
 
 const ResumeDisplay = ({ resume }) => {
 
   const [editableResume, setEditableResume] = useState(resume);
-  const [editMode, setEditMode] = useState({});
+  const refs = useRef({});
 
 
   useEffect(() => {
     setEditableResume(resume);
   }, [resume]);
 
-  const handleChange = (newValue, section, field) => {
-    const updatedResume = {
-      ...editableResume,
-      [section]: {
-        ...editableResume[section],
-        [field]: newValue,
-      },
-    };
-    setEditableResume(updatedResume);
-    console.log('RESUME NOW: ', editableResume);
+  const handleBlur = (fieldPath) => {
+    const ref = refs.current[fieldPath];
+    const newValue = ref.textContent;  // Access the content directly from the DOM node
+    const currentValue = _.get(editableResume, fieldPath);
+
+    if (newValue !== currentValue) {
+      const updatedResume = _.cloneDeep(editableResume);
+      _.set(updatedResume, fieldPath, newValue);
+      setEditableResume(updatedResume);
+      console.log('Updated Resume:', updatedResume);
+    }
   };
 
-  const handleBlur = (section, field) => {
-    setEditMode({ ...editMode, [`${section}-${field}`]: false });
-    // Optionally, update backend here
+  // Dynamically create contentEditable fields
+  const createEditableField = (fieldPath, defaultValue, tag = 'div', className = "") => {
+    if (!refs.current[fieldPath]) {
+      refs.current[fieldPath] = React.createRef();
+    }
+
+    const Tag = tag;
+
+    return (
+      <Tag
+        key={fieldPath}
+        ref={(el) => refs.current[fieldPath] = el}
+        contentEditable
+        onBlur={() => handleBlur(fieldPath)}
+        className={`cursor-text hover:bg-blue-100 ${className}`}
+        suppressContentEditableWarning={true}
+      >
+        {_.get(editableResume, fieldPath) || defaultValue}
+      </Tag>
+    );
   };
 
   return (
@@ -34,16 +54,10 @@ const ResumeDisplay = ({ resume }) => {
       <div className="flex bg-zinc-50 p-4 mb-4">
         {/* <!-- Left Column for Name and Position --> */}
         <div className="flex-1">
-  
-          <EditableField 
-            className="text-2xl font-bold"
-            value={editableResume.ContactInformation.Name}
-            onValueChange={(newValue) => handleChange(newValue, 'ContactInformation', 'Name')}
-            placeholder='No Name'
-            tag='h1'
-          />
-          
-          <p className="text-lg font-semibold">{resume.Position || null}</p>
+
+          {createEditableField('ContactInformation.Name', 'No Name Provided', 'h1', 'text-2xl font-bold')}
+          {createEditableField('ContactInformation.Position', '', 'p', 'text-sm text-gray-600')}          
+
         </div>
 
         {/* <!-- Right Column for Contact Information --> */}
@@ -62,26 +76,20 @@ const ResumeDisplay = ({ resume }) => {
               <div key={index} className="mb-6">
                 <div className="flex justify-between items-baseline">
 
-
-                  {/* <h3 className="text-lg font-semibold">{exp.Title}</h3> */}
-                  <EditableField 
-                    className="text-lg font-semibold"
-                    value={exp.Title}
-                    onValueChange={(newValue) => handleChange(newValue, 'Experience', 'Title')}
-                    placeholder='No Name'
-                    tag='h3'
-                  />
-
+                  {createEditableField(`Experience[${index}].Title`, '', 'p', 'text-lg font-semibold')}  
 
                   <span className="text-xs text-gray-600">{exp.Duration}</span>
                 </div>
-                <p className="italic tx-sm text-gray-600">{exp.Company}</p>
+                {/* <p className="italic text-sm text-gray-600">{exp.Company}</p> */}
+                {createEditableField(`Experience[${index}].Company`, '', 'p', 'italic text-sm text-gray-600')}  
+
                 <br/>
                 <p className="text-sm mb-2">{exp.Overview}</p>
                 {exp.Responsibilities && (
                   <ul className="list-disc pl-5 text-sm">
                     {exp.Responsibilities.map((res, resIndex) => (
-                      <li key={resIndex}>{res}</li>
+                      // <li key={resIndex}>{res}</li>
+                      createEditableField(`Experience[${index}].Responsibilities[${resIndex}]`, '', 'li')
                     ))}
                   </ul>
                 )}
