@@ -1,16 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import EditableField from './editable_field';
 
 const ResumeDisplay = ({ resume }) => {
 
-  return (
-    // <div className="bg-white p-3 shadow-md rounded-lg max-w-4xl mb-2 mx-auto">
-    <div className="a4-size">
+  const [editableResume, setEditableResume] = useState(resume);
+  const [editMode, setEditMode] = useState({});
 
+
+  useEffect(() => {
+    setEditableResume(resume);
+  }, [resume]);
+
+  const handleChange = (newValue, section, field) => {
+    const updatedResume = {
+      ...editableResume,
+      [section]: {
+        ...editableResume[section],
+        [field]: newValue,
+      },
+    };
+    setEditableResume(updatedResume);
+    console.log('RESUME NOW: ', editableResume);
+  };
+
+  const handleBlur = (section, field) => {
+    setEditMode({ ...editMode, [`${section}-${field}`]: false });
+    // Optionally, update backend here
+  };
+
+  return (
+    <div className="a4-size">
 
       <div className="flex bg-zinc-50 p-4 mb-4">
         {/* <!-- Left Column for Name and Position --> */}
         <div className="flex-1">
-          <h1 className="text-2xl font-bold">{resume.ContactInformation?.Name || 'No Name Provided'}</h1>
+  
+          <EditableField 
+            className="text-2xl font-bold"
+            value={editableResume.ContactInformation.Name}
+            onValueChange={(newValue) => handleChange(newValue, 'ContactInformation', 'Name')}
+            placeholder='No Name'
+            tag='h1'
+          />
+          
           <p className="text-lg font-semibold">{resume.Position || null}</p>
         </div>
 
@@ -29,7 +61,18 @@ const ResumeDisplay = ({ resume }) => {
             {resume.Experience.map((exp, index) => (
               <div key={index} className="mb-6">
                 <div className="flex justify-between items-baseline">
-                  <h3 className="text-lg font-semibold">{exp.Title}</h3>
+
+
+                  {/* <h3 className="text-lg font-semibold">{exp.Title}</h3> */}
+                  <EditableField 
+                    className="text-lg font-semibold"
+                    value={exp.Title}
+                    onValueChange={(newValue) => handleChange(newValue, 'Experience', 'Title')}
+                    placeholder='No Name'
+                    tag='h3'
+                  />
+
+
                   <span className="text-xs text-gray-600">{exp.Duration}</span>
                 </div>
                 <p className="italic tx-sm text-gray-600">{exp.Company}</p>
