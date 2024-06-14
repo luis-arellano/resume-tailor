@@ -6,11 +6,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import apiClient from "@/libs/api";
 
 export const ModelContext = createContext();
-export const useModel = () => useContext(ModelContext);
+export const useResume = () => useContext(ModelContext);
 
 export const ModelProvider = ({ children }) => {
     const [selectedModel, setSelectedModel] = useState(null);
-    const [credits, setTotalCredits] = useState(0);
     const [refreshKey, setRefreshKey] = useState(0);
 
 
@@ -25,17 +24,6 @@ export const ModelProvider = ({ children }) => {
         if (storedModel) {
             setSelectedModel(JSON.parse(storedModel));
         }
-
-        // Set User Credits
-        const response = await apiClient.get("/supabase/credits");
-
-        // If there is no data, it means the user doesn't have a profile,
-        // and needs to first buy credits.
-        if(!response) {
-            return
-        }
-        console.log("data: ", response);
-        setTotalCredits(response.data || 0);
     }
 
 
@@ -53,10 +41,9 @@ export const ModelProvider = ({ children }) => {
         <ModelContext.Provider value={{
             selectedModel,
             setSelectedModel,
-            credits,
-            setTotalCredits,
             refreshModels,
-            refreshKey
+            refreshKey,
+            setRefreshKey
         }}>
             {children}
         </ModelContext.Provider>
