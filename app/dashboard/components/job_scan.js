@@ -1,15 +1,98 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
+import { ModelContext } from '../context';
+import { useResume } from '../context';
+import apiClient from '@/libs/api';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { AiOutlineCloudUpload } from 'react-icons/ai';
 
+
+const loader = <span className="loading loading-spinner loading-md"></span>
+
+/**
+ * Comoponent to Upload Resumes, Job descriptions, and trigger the analysis
+ * 
+ * TODO(select a given resume)
+ * TODO(after selecting a resume, set it as selected resume)
+ * 
+ * @returns 
+ */
 function JobScan() {
+  const [loading, setLoading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState('');
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [resumes, setResumes] = useState([])
+  const { refreshKey, setRefreshKey } = useResume(); //need to provide on context
   const [resumeFile, setResumeFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
 
-  const handleResumeUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setResumeFile(file);
+  const handleFileChange = (event) => {
+    setLoading(true);
+    const uploadedFile = event.target.files[0];
+    if (uploadedFile) {
+      setResumeFile(uploadedFile);
+      event.target.value = '';
+      // Additional checks for file type or size here
     }
   };
+
+  useEffect(() => {
+    if (resumeFile) {
+      handleFileUpload();
+    }
+  }, [resumeFile]);
+
+
+  const handleFileUpload = async (e) => {
+    // e.preventDefault(); // prevent the browser from doing a post/get request
+
+    if (!resumeFile) {
+      alert('Please select a file first!');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('resume', resumeFile);
+
+      // Call the api endpoint
+      const response = await apiClient.post('/resume/post', formData);
+
+      if (response) {
+        console.log('File uploaded successfully:', response);
+        setUploadStatus('Resume uploaded successfully!');
+        setRefreshKey(prevKey => prevKey + 1); // Update the refreshKey to trigger a refresh
+      }
+    }
+    catch (error) {
+      console.error('Error uploading file:', error);
+      setUploadStatus('Error uploading file');
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  const loadResumes = async () => {
+    try {
+      const response = await apiClient.get("/resume/get")
+      return response
+    } catch (e) {
+      console.error(e?.message);
+    } finally {
+      console.log('Finished Loading Resumes');
+    }
+  };
+
+  // Fetch data on component mount
+  useEffect(() => {
+    (async () => {
+      const fetchedResumes = await loadResumes();
+      // sort models by most recently created
+      fetchedResumes.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      setResumes(fetchedResumes);
+    })();
+  }, [refreshKey]); // Context can trigger a reresh
 
   const handleJobDescriptionChange = (event) => {
     setJobDescription(event.target.value);
@@ -22,34 +105,69 @@ function JobScan() {
   };
 
   return (
-    <div className=" w-screen mx-auto p-5 bg-white rounded-lg shadow-md">
-            <form onSubmit={handleSubmit} className="flex justify-between p-5 space-x-4">
-            <div className="flex flex-col space-y-2">
-                <label className="block">
-                Resume
-                <input type="file" onChange={handleResumeUpload} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
-                </label>
-                {resumeFile && <div className="text-sm text-gray-600">{resumeFile.name}</div>}
-            </div>
-            <div className="flex flex-col space-y-2">
-                <label className="block">
-                Job description
-                <textarea
-                    value={jobDescription}
-                    onChange={handleJobDescriptionChange}
-                    placeholder="Job description..."
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                ></textarea>
-                </label>
-            </div>
-            <div className="flex flex-col space-y-2">
-                <button type="submit" className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">Power Edit</button>
-                <button type="button" onClick={() => { setResumeFile(null); setJobDescription(''); }} className="px-4 py-2 font-bold text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-100">Cancel</button>
-            </div>
-            </form>
+    <div className="flex w-full mx-auto bg-white rounded-lg shadow-md">
 
+      <div className="flex flex-col w-2/4 p-4 border-r border-gray-300">
+
+        {/* Container for the upload and list of uploaded resumes */}
+        <div id="upload-container" className="relative bg-white p-2 m-2 rounded-lg border flex items-center justify-between">
+          <p className="text-sm text-gray-600">
+            {loading ? 'Parsing your resume.' : 'Upload a new resume here'}.</p>
+          <label htmlFor="file-input"
+            className="text-xs text-grey border border-black shadow-md
+           py-2 px-2 rounded-2xl cursor-pointer hover:duration-500 hover:bg-black hover:text-white">
+            Upload Resume
+          </label>
+          <input type="file" className="hidden" id="file-input" onChange={event => handleFileChange(event)} />
+
+          {/* Loading Overlay */}
+          {loading && (
+            <div className="absolute inset-0 border rounded-lg border text-gray-600 text-sm backdrop-blur-md bg-white/30 flex flex-col items-center justify-center">
+              <div className='text-sm'> {loader} Parsing your Resume</div>
+            </div>
+          )}
+
+        </div>
+
+        {/* List of Uploaded resumes */}
+        <ul className="overflow-y-auto m-2">
+          {resumes.map((resume, index) => (
+            <li key={index} className="p-2 text-xs rounded-lg border m-1 hover:bg-gray-100">
+              <div className="form-control">
+                <label className="label cursor-pointer">
+                  <span className="label-text">{resume.file_name} - {new Date(resume.created_at).toLocaleDateString()}</span>
+                  <input type="checkbox" defaultChecked className="checkbox checkbox-sm" />
+                </label>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex flex-col justify-between p-5 space-y-4 w-2/3">
+        <div>
+          <label className="block text-sm">
+            Job description
+            <textarea
+              value={jobDescription}
+              onChange={handleJobDescriptionChange}
+              placeholder="Paste the job description here..."
+              className="mt-1 block w-full 
+              px-3 py-2 border border-gray-300 
+              rounded-md shadow-sm 
+              focus:outline-none
+              focus:ring-black
+              focus:border-black"
+            ></textarea>
+          </label>
+        </div>
+        <div>
+          <button type="submit" className="text-xs text-grey border border-black shadow-md
+           py-2 px-2 rounded-2xl cursor-pointer hover:duration-500 hover:bg-black hover:text-white">Magic Scan</button>
+        </div>
+      </form>
     </div>
-
   );
 }
 
