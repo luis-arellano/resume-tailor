@@ -11,7 +11,7 @@ export const useResume = () => useContext(ModelContext);
 export const ModelProvider = ({ children }) => {
     const [selectedModel, setSelectedModel] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
-
+    const [contextLoading, setContextLoading] = useState(true);
 
     const getUserData = async () => {
         const supabase = createClientComponentClient();
@@ -24,6 +24,7 @@ export const ModelProvider = ({ children }) => {
         if (storedModel) {
             setSelectedModel(JSON.parse(storedModel));
         }
+        setContextLoading(false);
     }
 
 
@@ -43,7 +44,8 @@ export const ModelProvider = ({ children }) => {
             setSelectedModel,
             refreshModels,
             refreshKey,
-            setRefreshKey
+            setRefreshKey,
+            contextLoading
         }}>
             {children}
         </ModelContext.Provider>

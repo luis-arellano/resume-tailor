@@ -11,22 +11,6 @@ import { ModelProvider } from "./context";
 export const dynamic = "force-dynamic";
 
 export default function Dashboard() {
-  const [file, setFile] = useState(null);
-  const [resumes, setResumes] = useState([]);
-
-  // Get resumes associated with the user.
-  useEffect(() => {
-    const fetchResumes = async () => {
-      try {
-        const response = await apiClient.get('/resume/get');
-        setResumes(response); // Assuming the response data is the array of resumes
-        console.log('RESPONSE: ', response);
-      } catch (error) {
-        console.error('Error fetching resumes:', error);
-      }
-    };
-    fetchResumes();
-  }, []);
 
   return (
     <>
@@ -39,9 +23,7 @@ export default function Dashboard() {
         </main>
 
         <section className="w-full max-w-4xl space-y-8">
-            {resumes.map(resume => (
-              <ResumeDisplay key={resume.file_name} resume={resume.resume_data} />
-            ))}
+            <ResumeDisplay/>
           </section>
       </ModelProvider>
     </>

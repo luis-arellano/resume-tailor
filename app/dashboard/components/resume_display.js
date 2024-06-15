@@ -1,17 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import EditableField from './editable_field';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import _ from 'lodash';  // Import lodash
+import { ModelContext } from '../context';
 
-
-const ResumeDisplay = ({ resume }) => {
-
-  const [editableResume, setEditableResume] = useState(resume);
+const ResumeDisplay = ({  }) => {
+  const { selectedModel, contextLoading } = useContext(ModelContext);
+  const [editableResume, setEditableResume] = useState(selectedModel);
   const refs = useRef({});
 
-
   useEffect(() => {
-    setEditableResume(resume);
-  }, [resume]);
+    if(selectedModel){
+      setEditableResume(selectedModel.resume_data);
+    }
+    
+  }, [selectedModel]);
+
 
   const handleBlur = (fieldPath) => {
     const ref = refs.current[fieldPath];
@@ -22,7 +24,6 @@ const ResumeDisplay = ({ resume }) => {
       const updatedResume = _.cloneDeep(editableResume);
       _.set(updatedResume, fieldPath, newValue);
       setEditableResume(updatedResume);
-      console.log('Updated Resume:', updatedResume);
     }
   };
 
@@ -48,6 +49,14 @@ const ResumeDisplay = ({ resume }) => {
     );
   };
 
+  if (contextLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!editableResume) {
+    return <p>No resume selected</p>;
+  }
+
   return (
     <div className="a4-size">
 
@@ -62,23 +71,25 @@ const ResumeDisplay = ({ resume }) => {
 
         {/* <!-- Right Column for Contact Information --> */}
         <div className="flex-1 text-right text-xs italic">
-          <p >{resume.ContactInformation?.Email || 'No Email Provided'}</p>
-          <p >{resume.ContactInformation?.Phone || 'No Phone Provided'}</p>
-          <p className=" mb-2">{resume.ContactInformation?.Location || 'No Location Provided'}</p>
+          <p >{editableResume.ContactInformation?.Email || 'No Email Provided'}</p>
+          <p >{editableResume.ContactInformation?.Phone || 'No Phone Provided'}</p>
+          <p className=" mb-2">{editableResume.ContactInformation?.Location || 'No Location Provided'}</p>
         </div>
       </div>
 
       <div className='p-4'>
-        {resume.Experience && resume.Experience.length > 0 && (
+        {editableResume.Experience && editableResume.Experience.length > 0 && (
           <>
             <h2 className="text-xl font-semibold mb-2">Work Experience</h2>
-            {resume.Experience.map((exp, index) => (
+            {editableResume.Experience.map((exp, index) => (
               <div key={index} className="mb-6">
                 <div className="flex justify-between items-baseline">
 
                   {createEditableField(`Experience[${index}].Title`, '', 'p', 'text-lg font-semibold')}  
 
-                  <span className="text-xs text-gray-600">{exp.Duration}</span>
+                  {/* <span className="text-xs text-gray-600">{exp.Duration}</span> */}
+                  <span className="text-xs text-gray-600">{exp.StartDate} - {exp.EndDate}</span>
+
                 </div>
                 {/* <p className="italic text-sm text-gray-600">{exp.Company}</p> */}
                 {createEditableField(`Experience[${index}].Company`, '', 'p', 'italic text-sm text-gray-600')}  
@@ -98,15 +109,17 @@ const ResumeDisplay = ({ resume }) => {
           </>
         )}
 
-        {resume.Education && resume.Education.length > 0 && (
+        {editableResume.Education && editableResume.Education.length > 0 && (
           <>
             <h2 className="text-xl font-semibold mb-2">Education</h2>
-            {resume.Education.map((edu, index) => (
+            {editableResume.Education.map((edu, index) => (
               <div key={index} className="mb-4">
 
                 <div className="flex justify-between items-baseline">
                   <h3 className="text-sm font-semibold">{edu.School}</h3>
-                  <span className="text-xs text-gray-600">{edu.Duration}</span>
+                  {/* <span className="text-xs text-gray-600">{edu.Duration}</span> */}
+                  <span className="text-xs text-gray-600">{edu.Date}</span>
+
                 </div>
 
                 <p className="text-sm">{edu.Degree}</p>
@@ -115,25 +128,25 @@ const ResumeDisplay = ({ resume }) => {
           </>
         )}
 
-        {resume.Skills && resume.Skills.length > 0 && (
+        {editableResume.Skills && editableResume.Skills.length > 0 && (
           <>
             <h2 className="text-xl font-semibold mb-2">Skills</h2>
             <p className="text-sm">
-              {resume.Skills.map((skill, index) => (
+              {editableResume.Skills.map((skill, index) => (
                 <span key={index}>
-                  {skill}{index < resume.Skills.length - 1 ? ', ' : ''}
+                  {skill}{index < editableResume.Skills.length - 1 ? ', ' : ''}
                 </span>
               ))}
             </p>
           </>
         )}
 
-        {resume.Languages && resume.Languages.length > 0 && (
+        {editableResume.Languages && editableResume.Languages.length > 0 && (
           <>
             <h2 className="text-xl font-semibold mb-2">Languages</h2>
-            {resume.Languages.map((lang, index) => (
+            {editableResume.Languages.map((lang, index) => (
               <span key={index}>
-                {lang}{index < resume.Languages.length - 1 ? ', ' : ''}
+                {lang}{index < editableResume.Languages.length - 1 ? ', ' : ''}
               </span>
             ))}
           </>

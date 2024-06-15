@@ -1,20 +1,17 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { ModelContext } from '../context';
+import { ModelContext} from '../context';
 import { useResume } from '../context';
 import apiClient from '@/libs/api';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 
 const loader = <span className="loading loading-spinner loading-md"></span>
 
 /**
  * Comoponent to Upload Resumes, Job descriptions, and trigger the analysis
- * 
- * TODO(select a given resume)
- * TODO(after selecting a resume, set it as selected resume)
- * 
  * @returns 
  */
 function JobScan() {
@@ -22,9 +19,21 @@ function JobScan() {
   const [uploadStatus, setUploadStatus] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [resumes, setResumes] = useState([])
-  const { refreshKey, setRefreshKey } = useResume(); //need to provide on context
+  const { refreshKey, setRefreshKey, selectedModel, setSelectedModel } = useResume(); //need to provide on context
   const [resumeFile, setResumeFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
+
+
+  const handleResumeSelect = (index) => {
+    setSelectedModel(resumes[index]);
+
+    const supabase = createClientComponentClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+            localStorage.setItem(`selectedModel_${session.user.id}`, JSON.stringify(resumes[index]));
+        }
+    });
+};
 
   const handleFileChange = (event) => {
     setLoading(true);
@@ -136,7 +145,10 @@ function JobScan() {
               <div className="form-control">
                 <label className="label cursor-pointer">
                   <span className="label-text">{resume.file_name} - {new Date(resume.created_at).toLocaleDateString()}</span>
-                  <input type="checkbox" defaultChecked className="checkbox checkbox-sm" />
+                  <input type="radio" name="selected-resume" className="radio radio-sm"
+                       checked={selectedModel ? selectedModel.file_name === resume.file_name: false}
+                       onChange={() => handleResumeSelect(index)}
+                  />
                 </label>
               </div>
             </li>
