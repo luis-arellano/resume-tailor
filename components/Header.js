@@ -30,14 +30,31 @@ const cta = <ButtonSignin extraStyle="btn-primary" />;
 const Header = () => {
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
+  const [applyBlur, setApplyBlur] = useState(false);
 
   // setIsOpen(false) when the route changes (i.e: when the user clicks on a link on mobile)
   useEffect(() => {
     setIsOpen(false);
   }, [searchParams]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+        // Set threshold to trigger blur effect
+        const shouldBeBlurred = window.scrollY > 50; // Change '50' to match your header’s height or desired threshold
+        setApplyBlur(shouldBeBlurred);
+    };
+
+    // Add scroll event listener
+    window.addEventListener('scroll', handleScroll);
+
+    // Clean up the event listener
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+    };
+}, []);
+
   return (
-    <header className="bg-base-200">
+    <header className={`bg-transparent text-white z-50 sticky top-0 w-full ${applyBlur ? 'backdrop-blur-md bg-transparent border-b border-slate-300' : ''}`}>
       <nav
         className="container flex items-center justify-between px-8 py-4 mx-auto"
         aria-label="Global"

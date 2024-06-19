@@ -11,10 +11,11 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <>
+    <div className='dotted-grid'>
       <Suspense>
         <Header />
       </Suspense>
-      <main>
+      <main >
         <Hero />
         <Problem />
         <FeaturesAccordion />
@@ -23,6 +24,7 @@ export default function Home() {
         <CTA />
       </main>
       <Footer />
+    </div>
     </>
   );
 }

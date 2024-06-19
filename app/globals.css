@@ -21,6 +21,23 @@ progress::-webkit-progress-value {
   }
 }
 
+.dotted-grid {
+  background-color: #171923; /* Dark background color */
+  background-image: radial-gradient(rgba(74, 74, 74, 0.2) 1px, transparent 1px); /* creates the dots */
+  background-size: 15px 15px; /* Adjust the size of the grid dots */
+}
+
+.text-glow {
+  /* h-shadow v-shadow blur color
+  the values are: horizontal offset, vertical offset, blur radious, color-opacity
+  by having 3 shadows, each with a larger blur radious we create a shadow effect
+  */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),  
+               0 0 20px rgba(255, 255, 255, 0.6),
+               0 0 30px rgba(255, 255, 255, 0.4);
+}
+
+
 /* Ensures the div follows an A4 page */
 .a4-size {
   width: 210mm;

@@ -110,7 +110,7 @@ const Item = ({ feature, isOpen, setFeatureSelected }) => {
   return (
     <li>
       <button
-        className="relative flex gap-2 items-center w-full py-5 text-base font-medium text-left md:text-lg"
+        className="relative flex gap-2 items-center w-full py-5 font-medium text-left md:text-lg"
         onClick={(e) => {
           e.preventDefault();
           setFeatureSelected();
@@ -121,8 +121,8 @@ const Item = ({ feature, isOpen, setFeatureSelected }) => {
           {svg}
         </span>
         <span
-          className={`flex-1 text-base-content ${
-            isOpen ? "text-primary font-semibold" : ""
+          className={`flex-1 text-white ${
+            isOpen ? "font-bold" : ""
           }`}
         >
           <h3 className="inline">{title}</h3>
@@ -191,7 +191,7 @@ const FeaturesAccordion = () => {
 
   return (
     <section
-      className="py-24 md:py-32 space-y-24 md:space-y-32 max-w-7xl mx-auto bg-base-100 "
+      className="py-24 md:py-32 space-y-24 md:space-y-32 max-w-7xl mx-auto text-white"
       id="features"
     >
       <div className="px-8">
