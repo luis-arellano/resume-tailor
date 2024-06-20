@@ -13,7 +13,7 @@ export async function GET(req) {
 
     const {data, error} = await supabase
         .from('resumes')
-        .select('file_name, resume_data, created_at')
+        .select('id, file_name, resume_data, created_at')
         .eq('user_id', user_id);
 
     if (error) throw error;
