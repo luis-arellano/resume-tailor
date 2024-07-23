@@ -54,7 +54,7 @@ const Header = () => {
 }, []);
 
   return (
-    <header className={`bg-transparent text-white z-50 sticky top-0 w-full ${applyBlur ? 'backdrop-blur-md bg-transparent border-b border-slate-300' : ''}`}>
+    <header className={`bg-transparent text-slate-500 z-50 sticky top-0 w-full ${applyBlur ? 'backdrop-blur-md bg-transparent border-b border-slate-300' : ''}`}>
       <nav
         className="container flex items-center justify-between px-8 py-4 mx-auto"
         aria-label="Global"

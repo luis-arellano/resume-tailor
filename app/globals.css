@@ -22,7 +22,7 @@ progress::-webkit-progress-value {
 }
 
 .dotted-grid {
-  background-color: #171923; /* Dark background color */
+  background-color: #fefefe; /* Dark background color */
   background-image: radial-gradient(rgba(74, 74, 74, 0.2) 1px, transparent 1px); /* creates the dots */
   background-size: 15px 15px; /* Adjust the size of the grid dots */
 }

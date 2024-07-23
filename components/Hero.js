@@ -17,7 +17,7 @@ const Hero = () => {
           objectFit="cover"
           priority={true}
           className="opacity-75"
-        // style={{ maskImage: 'linear-gradient(to top, transparent, black 75%)' }}
+        // style={{ maskImage: 'linear-gradient(to top, transparent, black 20%)' }}
         />
         {/* <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div> */}
         <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent via-black" style={{ backgroundImage: 'linear-gradient(to top, rgba(0,0,0,0.9) 30%, transparent 90%)' }}></div>
@@ -26,6 +26,7 @@ const Hero = () => {
 
       {/* Content */}
       <div className="z-10 p-32">
+      {/* <div className="absolute top-1/4 w-full text-center z-10"> */}
 
         <div className="flex flex-col gap-10 lg:gap-14 items-center justify-center text-center lg:text-left lg:items-start z-10">
 
@@ -46,7 +47,7 @@ const Hero = () => {
 
           <h1 className="font-extrabold text-4xl lg:text-4xl tracking-tight md:-mb-4">
             Struggling to get Interviews?... <br />
-            It's your Resume
+            It is your Resume
           </h1>
           <p className="text-lg opacity-80 leading-relaxed">
             Many resumes fail to pass through applicant tracking systems (ATS). Stand out with a resume that speaks directly to the job you want.
