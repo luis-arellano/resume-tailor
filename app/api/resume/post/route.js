@@ -5,7 +5,9 @@ import PDFParser from 'pdf2json'; // To parse the pdf
 import { sendOpenAi } from "@/libs/gpt";
 import { cookies } from "next/headers";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { RESUME_SCHEMA2 } from "@/libs/gpt";
 import { RESUME_SCHEMA } from "@/libs/gpt";
+
 
 export async function POST(req) {
 
@@ -18,6 +20,7 @@ export async function POST(req) {
     if (uploadedFiles && uploadedFiles.length > 0) {
         const uploadedFile = uploadedFiles[0];
         console.log('Uploaded file:', uploadedFile);
+        let originalFileName = uploadedFile.name; 
 
         if (uploadedFiles) {
             // Generate a unique filename
@@ -57,8 +60,9 @@ export async function POST(req) {
                     resolve(new NextResponse('Error processing PDF', { status: 500 }));
                 });
     
-                pdfParser.on('pdfParser_dataReady', async () => {
+                pdfParser.on('pdfParser_dataReady', async (pdfData) => {
                     const parsedText = pdfParser.getRawTextContent();
+
                     // const instructions = 'Please extract the following information from the attached resume: contact_information, name, email, phone, location; experience (including company, title, Duration in dates, overview, responsibilities); Education (Degree, school, duration); Skills, Languages, Other information. Structure your response In Json';
                     const instructions = `Summarize the text provided into a JSON with the following structure ${RESUME_SCHEMA}`
                     const message = { role: 'user', content: parsedText + ' ' + instructions };
@@ -67,14 +71,19 @@ export async function POST(req) {
                     try {
                         const llmResponse = await sendOpenAi([message], 'default_user', 4000, 0.1);
                         console.log('LLM Response:', llmResponse);
+                        // let cleanedResponse = llmResponse.replace(/```json/g, '"').replace(/```/g, '"').trim();
+                        // print('CLEANED JSON: ', cleanedResponse);
                         let jsonLlmResponse = JSON.parse(llmResponse);
+
+                        console.log('parsed json: ',jsonLlmResponse);
+
 
                         // Save to Supabase
                         const {status, error} = await supabase
                           .from('resumes')
                           .insert([{
                             user_id: user_id,
-                            file_name: fileName,
+                            file_name: originalFileName,
                             resume_data: jsonLlmResponse
                             }
                           ]);
@@ -86,7 +95,7 @@ export async function POST(req) {
                         }
 
                         const response = new NextResponse(JSON.stringify(llmResponse));
-                        response.headers.set('FileName', fileName);
+                        response.headers.set('FileName', originalFileName);
                         response.headers.set('Content-Type', 'application/json');
                         resolve(response);
                     } catch (error) {

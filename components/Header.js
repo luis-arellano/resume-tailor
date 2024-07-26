@@ -23,7 +23,7 @@ const links = [
   },
 ];
 
-const cta = <ButtonSignin extraStyle="btn-primary" />;
+const cta = <ButtonSignin extraStyle="btn-special" />;
 
 // A header with a logo on the left, links in the center (like Pricing, etc...), and a CTA (like Get Started or Login) on the right.
 // The header is responsive, and on mobile, the links are hidden behind a burger button.
@@ -54,7 +54,7 @@ const Header = () => {
 }, []);
 
   return (
-    <header className={`bg-transparent text-slate-500 z-50 sticky top-0 w-full ${applyBlur ? 'backdrop-blur-md bg-transparent border-b border-slate-300' : ''}`}>
+    <header className={`bg-transparent text-black z-50 sticky top-0 w-full ${applyBlur ? 'backdrop-blur-md bg-transparent border-b border-black' : ''}`}>
       <nav
         className="container flex items-center justify-between px-8 py-4 mx-auto"
         aria-label="Global"

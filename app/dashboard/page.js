@@ -14,7 +14,8 @@ export default function Dashboard() {
 
   return (
     <>
-      <ModelProvider>
+    <div className="dotted-grid"> 
+    <ModelProvider>
         <DashboardHeader />
         <main className="flex p-8 flex-col items-center">
 
@@ -26,6 +27,9 @@ export default function Dashboard() {
             <ResumeDisplay/>
           </section>
       </ModelProvider>
+
+    </div>
+
     </>
 
   );

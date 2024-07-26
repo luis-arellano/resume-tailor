@@ -2,7 +2,15 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import _ from 'lodash';  // Import lodash
 import { ModelContext } from '../context';
 
-const ResumeDisplay = ({  }) => {
+/***
+ * Renders a resume as a PDF form
+ * 
+ * TODO: save changes to the backend
+ * -do editable fields all over
+ * -have a delete button (probably on the job scan)
+ * -download as pdf
+ */
+const ResumeDisplay = () => {
   const { selectedModel, contextLoading } = useContext(ModelContext);
   const [editableResume, setEditableResume] = useState(selectedModel);
   const refs = useRef({});

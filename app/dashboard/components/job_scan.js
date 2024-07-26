@@ -25,6 +25,8 @@ function JobScan() {
 
 
   const handleResumeSelect = (index) => {
+    console.log('resumes: ', resumes);
+    console.log('INDEX CHANGED TO: ', index);
     setSelectedModel(resumes[index]);
 
     const supabase = createClientComponentClient();
@@ -175,8 +177,7 @@ function JobScan() {
           </label>
         </div>
         <div>
-          <button type="submit" className="text-xs text-grey border border-black shadow-md
-           py-2 px-2 rounded-2xl cursor-pointer hover:duration-500 hover:bg-black hover:text-white">Magic Scan</button>
+          <button type="submit" className="btn-special">Magic Scan</button>
         </div>
       </form>
     </div>

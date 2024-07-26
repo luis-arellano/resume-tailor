@@ -12,6 +12,11 @@ progress::-webkit-progress-value {
   transition: 0.6s width ease-out;
 }
 
+/* SPECIAL BUTTON */
+.btn-special {
+  @apply text-xs border border-black  bg-white shadow-md py-2 px-2 rounded-2xl cursor-pointer hover:duration-500 hover:bg-black hover:text-white;
+}
+
 @layer base {
   .btn-gradient {
     @apply !bg-gradient !bg-[length:300%_300%] hover:saturate-[1.2] shadow duration-100 !border-0 !border-transparent !bg-transparent animate-shimmer disabled:!bg-none disabled:!bg-gray-500/30  !text-white;
@@ -22,7 +27,7 @@ progress::-webkit-progress-value {
 }
 
 .dotted-grid {
-  background-color: #fefefe; /* Dark background color */
+  background-color: #ffffff; /* Dark background color */
   background-image: radial-gradient(rgba(74, 74, 74, 0.2) 1px, transparent 1px); /* creates the dots */
   background-size: 15px 15px; /* Adjust the size of the grid dots */
 }

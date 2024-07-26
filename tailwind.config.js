@@ -63,6 +63,17 @@ module.exports = {
     // You can add another theme among the list of 30+
     // Add "data-theme='theme_name" to any HTML tag to enable the 'theme_name' theme.
     // https://daisyui.com/
-    themes: ["light", "dark"],
-  },
+    themes: ["light", "dark", {
+      mytheme: {
+        'primary': '#FE5B35', // Green color for primary buttons and accents
+        'primary-focus': '#ff9982', // A lighter color for primary button hover/focus states
+        'secondary': '#64748b', // A secondary color, possibly for less prominent elements
+        'secondary-focus': '#475569', // A darker shade for secondary hover/focus states
+        'accent': '#a3e635', // A bright accent color for attention-grabbing elements
+        'neutral': '#000000', // A dark gray for neutral text and backgrounds
+        // 'base-100': '#1C1C1C', // Black for the base color of your dark theme background
+        "--border-btn": "1px", // border width of buttons
+      },
+    }],
+  }
 };

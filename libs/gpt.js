@@ -32,7 +32,7 @@ export const RESUME_SCHEMA = `
         "properties": {
           "Degree": { "type": "string" },
           "School": { "type": "string" },
-          "Duration": { "type": "string" }
+          "Date": { "type": "string" , "format": "date"}
         },
         "required": ["Degree", "School", "Duration"]
       }
@@ -43,6 +43,8 @@ export const RESUME_SCHEMA = `
         "type": "object",
         "properties": {
           "Title": { "type": "string" },
+          "StartDate": { "type": "string", "format": "date" },
+          "EndDate": { "type": "string", "format": "date" , "default": "Present"},
           "Company": { "type": "string" },
           "Duration": { "type": "string" },
           "Overview": { "type": "string" },
@@ -51,7 +53,7 @@ export const RESUME_SCHEMA = `
             "items": { "type": "string" }
           }
         },
-        "required": ["Title", "Company", "Duration"]
+        "required": ["Title", "Company", "StartDate"]
       }
     },
     "Certifications": {
@@ -61,7 +63,7 @@ export const RESUME_SCHEMA = `
         "properties": {
           "Name": { "type": "string" },
           "IssuingOrganization": { "type": "string" },
-          "DateReceived": { "type": "string" }
+          "DateReceived": { "type": "string", "format": "date" }
         },
         "required": ["Name", "IssuingOrganization"]
       }
@@ -72,6 +74,47 @@ export const RESUME_SCHEMA = `
     }
   },
   "required": ["ContactInformation", "Skills", "Education", "Experience"]
+}
+`
+
+export const RESUME_SCHEMA2 = `
+{
+  "ContactInformation": {
+        "Name",
+        "Bio",
+        "Email",
+        "Phone",
+        "Location"
+      },
+  "Skills": [],
+  "Languages": [],
+  "Education": [
+      {
+          "Degree",
+          "School",
+          "start_date",
+          "end_date",
+        }
+      ],
+  "Experience": [
+        {
+          "Title",
+          "Company",
+          "start-date", 
+          "end-date",
+          "Overview": (default null)
+          "Responsibilities":
+        }
+    ],
+  "Certifications": [
+        {
+          "Name"
+          "IssuingOrganization"
+          "DateReceived": date
+        },
+      ],
+    "OtherInformation":
+  }
 }
 `
 
@@ -87,10 +130,14 @@ export const sendOpenAi = async (messages, userId, max = 100, temp = 1) => {
   );
 
   const body = JSON.stringify({
-    model: "gpt-3.5-turbo-1106",
+    // model: "gpt-3.5-turbo-1106", // doesnt work
+    // model: "gpt-3.5-turbo-0125", //doesn't work just stores the schema
+    // model: 'gpt-4o', //json is not formatted correctly
+    model: 'gpt-4',
     messages,
     max_tokens: max,
     temperature: temp,
+    // response_format: { "type": "json_object" }, //testing json format
     user: userId,
   });
 
@@ -107,7 +154,7 @@ export const sendOpenAi = async (messages, userId, max = 100, temp = 1) => {
     const answer = res.data.choices[0].message.content;
     const usage = res?.data?.usage;
 
-    console.log(">>> " + answer);
+    console.log("ANSWER " + answer);
     console.log(
       "TOKENS USED: " +
         usage?.total_tokens +

@@ -7,7 +7,7 @@ import ButtonCheckout from "./ButtonCheckout";
 
 const Pricing = () => {
   return (
-    <section className="text-white overflow-hidden" id="pricing">
+    <section className="text-black overflow-hidden" id="pricing">
       <div className="py-24 px-8 max-w-5xl mx-auto">
         <div className="flex flex-col text-center w-full mb-20">
           <p className="font-medium text-primary mb-8">Pricing</p>
@@ -31,11 +31,11 @@ const Pricing = () => {
 
               {plan.isFeatured && (
                 <div
-                  className={`absolute -inset-[1px] rounded-[9px] bg-primary z-10`}
+                  className={`absolute -inset-[1px] rounded-[9px] bg-white z-10`}
                 ></div>
               )}
 
-              <div className="relative flex flex-col h-full gap-5 lg:gap-8 z-10 bg-neutral p-8 rounded-lg">
+              <div className="relative flex flex-col h-full gap-5 lg:gap-8 z-10 bg-white border-2 border-black  p-8 rounded-lg">
                 <div className="flex justify-between items-center gap-4">
                   <div>
                     <p className="text-lg lg:text-xl font-bold">{plan.name}</p>
