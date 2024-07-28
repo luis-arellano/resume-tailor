@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import _ from 'lodash';  // Import lodash
 import { ModelContext } from '../context';
+import apiClient from '@/libs/api';
 
 /***
  * Renders a resume as a PDF form
@@ -32,8 +33,24 @@ const ResumeDisplay = () => {
       const updatedResume = _.cloneDeep(editableResume);
       _.set(updatedResume, fieldPath, newValue);
       setEditableResume(updatedResume);
+
+      // Save changes to the backend
+      saveResumeToBackend(updatedResume);
+      // TODO need to make sure that resumes on context reflect the changes
     }
   };
+
+  const saveResumeToBackend = async (updatedResume) => {
+    try{
+      const formData = new FormData();
+      formData.append('resume_json', JSON.stringify(updatedResume));
+      formData.append('resume_id', selectedModel.id)
+      const response = await apiClient.post('/resume/update_resume', formData);
+    }
+    catch(err){
+      console.error(err);
+    }
+  }
 
   // Dynamically create contentEditable fields
   const createEditableField = (fieldPath, defaultValue, tag = 'div', className = "") => {

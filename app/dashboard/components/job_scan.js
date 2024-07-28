@@ -2,9 +2,6 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 import { ModelContext} from '../context';
 import { useResume } from '../context';
 import apiClient from '@/libs/api';
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 
@@ -25,8 +22,6 @@ function JobScan() {
 
 
   const handleResumeSelect = (index) => {
-    console.log('resumes: ', resumes);
-    console.log('INDEX CHANGED TO: ', index);
     setSelectedModel(resumes[index]);
 
     const supabase = createClientComponentClient();
