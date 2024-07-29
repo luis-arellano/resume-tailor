@@ -5,14 +5,12 @@ import apiClient from '@/libs/api';
 
 /***
  * Renders a resume as a PDF form
- * 
- * TODO: save changes to the backend
- * -do editable fields all over
+ * - Have a loader
  * -have a delete button (probably on the job scan)
  * -download as pdf
  */
 const ResumeDisplay = () => {
-  const { selectedModel, contextLoading } = useContext(ModelContext);
+  const { selectedModel, contextLoading, updateModel } = useContext(ModelContext);
   const [editableResume, setEditableResume] = useState(selectedModel);
   const refs = useRef({});
 
@@ -46,8 +44,15 @@ const ResumeDisplay = () => {
       formData.append('resume_json', JSON.stringify(updatedResume));
       formData.append('resume_id', selectedModel.id)
       const response = await apiClient.post('/resume/update_resume', formData);
+    
+    // Update teh context with the new resume data
+    if (response.status === 200){
+      console.log("updated resume RESPONSE:", response);
+      console.log('updated resume:', updatedResume);
+      updateModel({...selectedModel, resume_data: updatedResume});
     }
-    catch(err){
+
+   } catch(err){
       console.error(err);
     }
   }

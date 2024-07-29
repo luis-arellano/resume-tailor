@@ -27,6 +27,11 @@ export const ModelProvider = ({ children }) => {
         setContextLoading(false);
     }
 
+    const updateModel = (newModel) => {
+        setSelectedModel(newModel);
+
+    }
+
 
     // Used to refresh List Models
     const refreshModels = () => {
@@ -45,7 +50,8 @@ export const ModelProvider = ({ children }) => {
             refreshModels,
             refreshKey,
             setRefreshKey,
-            contextLoading
+            contextLoading,
+            updateModel
         }}>
             {children}
         </ModelContext.Provider>
