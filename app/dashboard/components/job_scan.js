@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { ModelContext} from '../context';
-import { useResume } from '../context';
+import { loadContext } from '../context';
 import apiClient from '@/libs/api';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { set } from 'lodash';
 
 
 const loader = <span className="loading loading-spinner loading-md"></span>
@@ -13,10 +14,11 @@ const loader = <span className="loading loading-spinner loading-md"></span>
  */
 function JobScan() {
   const [loading, setLoading] = useState(false);
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [resumes, setResumes] = useState([])
-  const { refreshKey, setRefreshKey, selectedModel, setSelectedModel } = useResume(); //need to provide on context
+  const { refreshKey, setRefreshKey, selectedModel, setSelectedModel, setKeyWords, setAnalysis } = loadContext(); //need to provide on context
   const [resumeFile, setResumeFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
 
@@ -104,24 +106,27 @@ function JobScan() {
     setJobDescription(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  // Submit the job description and resume for evaluation
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Here you would handle the form submission to your backend or another service
+    setLoadingAnalysis(true);
     const resume_data = JSON.stringify(selectedModel['resume_data']);
-    console.log('Submitting:', resume_data, jobDescription);
 
     try{
       const requestForm = new FormData();
       requestForm.append('resume',resume_data);
       requestForm.append('job_description', jobDescription);
-      const response = apiClient.post('/resume/evaluate_resume', requestForm);
+      const response = await apiClient.post('/resume/evaluate_resume', requestForm);
       console.log('LLM Response:', response);
+      setKeyWords(response.key_words.split());
+      setAnalysis(response.feedback);
     }
     catch (error) {
       console.error('Error evaluating resume:', error);
     }
-
-    
+    finally {
+      setLoadingAnalysis(false);
+    }  
   };
 
   return (
@@ -168,6 +173,7 @@ function JobScan() {
 
       </div>
 
+      {/* Container for the job description and Magic Scan */}
       <form onSubmit={handleSubmit} className="flex flex-col justify-between p-5 space-y-4 w-2/3">
         <div>
           <label className="block text-sm">
@@ -186,7 +192,8 @@ function JobScan() {
           </label>
         </div>
         <div>
-          <button type="submit" className="btn-special">Magic Scan</button>
+          <button type="submit" className="btn-special"> Magic Resume
+            {loadingAnalysis ? loader : ''}</button>
         </div>
       </form>
     </div>

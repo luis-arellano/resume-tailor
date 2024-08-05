@@ -31,7 +31,7 @@ export async function POST(req) {
      'Please evaluate the resume against the given job description, '+
      'on these categories Experience and Work History; Skills and Competencies; '+
      'Education and Qualifications; Achievements and Accomplishments; Cultural Fit.'+
-     'Please score the candidate on each of these categories on a scale from 1 to 5.'
+     'Please score the candidate on each of these categories on a scale from 1 to 5. Be very strict with your scoring. '
 
     const keyword_message = {'role': 'user', 'content': get_key_words};
     const feedback_message = {'role': 'user', 'content': get_resume_feedback};

@@ -6,12 +6,14 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import apiClient from "@/libs/api";
 
 export const ModelContext = createContext();
-export const useResume = () => useContext(ModelContext);
+export const loadContext = () => useContext(ModelContext);
 
 export const ModelProvider = ({ children }) => {
     const [selectedModel, setSelectedModel] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
     const [contextLoading, setContextLoading] = useState(true);
+    const [KeyWords, setKeyWords] = useState([]);
+    const [Analysis, setAnalysis] = useState(null);
 
     const getUserData = async () => {
         const supabase = createClientComponentClient();
@@ -32,7 +34,6 @@ export const ModelProvider = ({ children }) => {
 
     }
 
-
     // Used to refresh List Models
     const refreshModels = () => {
         setRefreshKey(prevKey => prevKey + 1);
@@ -51,7 +52,11 @@ export const ModelProvider = ({ children }) => {
             refreshKey,
             setRefreshKey,
             contextLoading,
-            updateModel
+            updateModel,
+            KeyWords,
+            setKeyWords,
+            Analysis,
+            setAnalysis
         }}>
             {children}
         </ModelContext.Provider>
