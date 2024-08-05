@@ -3,10 +3,9 @@
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import apiClient from "@/libs/api";
 
 export const ModelContext = createContext();
-export const loadContext = () => useContext(ModelContext);
+export const LoadContext = () => useContext(ModelContext);
 
 export const ModelProvider = ({ children }) => {
     const [selectedModel, setSelectedModel] = useState(null);

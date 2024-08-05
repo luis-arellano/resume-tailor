@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { ModelContext} from '../context';
-import { loadContext } from '../context';
+import { LoadContext } from '../context';
 import apiClient from '@/libs/api';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { set } from 'lodash';
@@ -18,7 +18,7 @@ function JobScan() {
   const [uploadStatus, setUploadStatus] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [resumes, setResumes] = useState([])
-  const { refreshKey, setRefreshKey, selectedModel, setSelectedModel, setKeyWords, setAnalysis } = loadContext(); //need to provide on context
+  const { refreshKey, setRefreshKey, selectedModel, setSelectedModel, setKeyWords, setAnalysis } = LoadContext(); //need to provide on context
   const [resumeFile, setResumeFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
 
@@ -192,6 +192,7 @@ function JobScan() {
           </label>
         </div>
         <div>
+          {/* TODO Fix the style here. I don't like it */}
           <button type="submit" className="btn-special"> Magic Resume
             {loadingAnalysis ? loader : ''}</button>
         </div>

@@ -7,6 +7,7 @@ import ResumeDisplay from "./components/resume_display";
 import JobScan from "./components/job_scan";
 import DashboardHeader from "./components/header";
 import { ModelProvider } from "./context";
+import ScoreAnalysis from "./components/score_and_analysis";
 
 export const dynamic = "force-dynamic";
 
@@ -23,9 +24,17 @@ export default function Dashboard() {
 
         </main>
 
-        <section className="w-full max-w-4xl space-y-8">
+        <section className="flex p-8 w-full mx-auto">
+
+          <div className="flex flex-col w-2/5 overflow-x-scroll">
+              <ScoreAnalysis />
+          </div>  
+
+          <div className="flex flex-col w-3/5 overflow-x-scroll ">
             <ResumeDisplay/>
-          </section>
+          </div>
+
+        </section>
       </ModelProvider>
 
     </div>
