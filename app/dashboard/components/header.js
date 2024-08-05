@@ -8,7 +8,7 @@ import config from "@/config";
 function DashboardHeader() {
 
     return (
-    <header className="p-4 bg-base-200">
+    <header className="p-4 bg-white border border-b-black">
         {/* Logo / Name on large screens */}
         <div className="flex flex-1">
             <div className="flex items-center gap-2 shrink-0">
