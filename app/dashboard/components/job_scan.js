@@ -107,7 +107,21 @@ function JobScan() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Here you would handle the form submission to your backend or another service
-    console.log('Submitting:', resumeFile, jobDescription);
+    const resume_data = JSON.stringify(selectedModel['resume_data']);
+    console.log('Submitting:', resume_data, jobDescription);
+
+    try{
+      const requestForm = new FormData();
+      requestForm.append('resume',resume_data);
+      requestForm.append('job_description', jobDescription);
+      const response = apiClient.post('/resume/evaluate_resume', requestForm);
+      console.log('LLM Response:', response);
+    }
+    catch (error) {
+      console.error('Error evaluating resume:', error);
+    }
+
+    
   };
 
   return (
