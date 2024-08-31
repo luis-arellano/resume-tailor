@@ -1,10 +1,10 @@
-import React from 'react';
-import { loadContext } from '../context';
+import React, {useContext} from 'react';
+import { ModelContext } from '../context';
 
 
 const ScoreAnalysis = () => {
 
-    const { KeyWords, Analysis } = loadContext();
+    const { KeyWords, Analysis } = useContext(ModelContext);
 
     return (
         <div className="w-full p-4 mx-auto bg-white border border-1 border-grey rounded-lg shadow-md">

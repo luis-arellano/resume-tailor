@@ -1,14 +1,28 @@
 import { sendOpenAi } from "@/libs/gpt";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 
 
 export async function POST(req) {
+
     const data = await req.formData();
     const resume = data.get('resume');
+    const job_description = data.get('job_description');
+    
+    const profile_id = data.get('profile_id'); // Need to make sure I have this
+    const resume_id = data.get('resume_id'); // Need to make sure I have this
     console.log('Resume:', resume);
     console.log('json resume:', resume);
 
-    const job_description = data.get('job_description');
+    // Instantiate connection with Supabase
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const {
+        data: { session },
+    } = await supabase.auth.getSession();
+    const user_id = session?.user?.id
+
 
     const get_key_words = 'You are a highly skilled recruiter consultant.' +
      'Your task is to create a list of keywords that are relevant to the job description.' +
@@ -29,8 +43,9 @@ export async function POST(req) {
      '----------'+
      'You are a highly skilled recruiter consultant.'+
      'Please evaluate the resume against the given job description, '+
-     'on these categories Experience and Work History; Skills and Competencies; '+
-     'Education and Qualifications; Achievements and Accomplishments; Cultural Fit.'+
+     'Create 5 relevant categories based on the job description to evaluate the candidate on. '+
+    //  'on these categories Experience and Work History; Skills and Competencies; '+
+    //  'Education and Qualifications; Achievements and Accomplishments; Cultural Fit.'+
      'Please score the candidate on each of these categories on a scale from 1 to 5. Be very strict with your scoring. '
 
     const keyword_message = {'role': 'user', 'content': get_key_words};
@@ -52,6 +67,29 @@ export async function POST(req) {
     };
     console.log('Response:', response);
 
+
+    try {
+        const {status, error} = await supabase
+        .from('job_scans')
+        .insert([{
+          user_id: user_id,
+          resume_id: resume_id,
+          job_description: job_description,
+          keywords: key_words_response,
+          job_analysis: feedback_response
+          }
+        ]);
+        if (error) {
+            console.error('Error inserting into Supabase:', error);
+            throw error;
+        }
+    }
+    catch (error) {
+        console.error('Error inserting into Supabase:', error);
+        return new NextResponse('Error inserting into Supabase', { status: 500 });
+    }
+
+    //TODO might need to fix something here and use the data from the backend instead of the raw response.
     return new NextResponse(JSON.stringify(response), {
         status: 200,
         headers: {
