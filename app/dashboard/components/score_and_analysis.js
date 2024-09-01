@@ -13,13 +13,11 @@ const ScoreAnalysis = () => {
 
     useEffect(() => {
         const fetchJobScan = async () => {
-            console.log('Fetching job scan for resume:', selectedModel?.id);
             if (!selectedModel) return;
 
             setIsLoading(true);
             try {
                 const response = await apiClient.get(`/resume/get_latest_scan?resumeId=${selectedModel.id}`);
-                console.log('Job scan response:', response);
                 setLatestJobScan(response);
             } catch (error) {
                 console.error('Error fetching job scan:', error);

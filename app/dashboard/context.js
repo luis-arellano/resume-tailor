@@ -16,6 +16,8 @@ export const ModelProvider = ({ children }) => {
     const [Analysis, setAnalysis] = useState(null); // TODO: remove this
     const [latestJobScan, setLatestJobScan] = useState(null);
 
+
+
     const getUserData = async () => {
         const supabase = createClientComponentClient();
         const {
@@ -30,9 +32,17 @@ export const ModelProvider = ({ children }) => {
         setContextLoading(false);
     }
 
-    const updateModel = (newModel) => {
+    const updateModel = async(newModel) => {
         setSelectedModel(newModel);
 
+        const supabase = createClientComponentClient();
+        const {
+            data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session) {
+            localStorage.setItem(`selectedModel_${session.user.id}`, JSON.stringify(newModel));
+        }
     }
 
     // Used to refresh List Resumes

@@ -11,7 +11,6 @@ import { RESUME_SCHEMA } from "@/libs/gpt";
 
 export async function POST(req) {
 
-    console.log('RECEIVED REQUEST: ');
     const data = await req.formData();
     const uploadedFiles = data.getAll('resume');
     let fileName = '';
@@ -19,7 +18,6 @@ export async function POST(req) {
 
     if (uploadedFiles && uploadedFiles.length > 0) {
         const uploadedFile = uploadedFiles[0];
-        console.log('Uploaded file:', uploadedFile);
         let originalFileName = uploadedFile.name; 
 
         if (uploadedFiles) {
@@ -66,17 +64,10 @@ export async function POST(req) {
                     // const instructions = 'Please extract the following information from the attached resume: contact_information, name, email, phone, location; experience (including company, title, Duration in dates, overview, responsibilities); Education (Degree, school, duration); Skills, Languages, Other information. Structure your response In Json';
                     const instructions = `Summarize the text provided into a JSON with the following structure ${RESUME_SCHEMA}`
                     const message = { role: 'user', content: parsedText + ' ' + instructions };
-                    console.log('INSTRUCTIONS FOR LLM: ', message);
     
                     try {
                         const llmResponse = await sendOpenAi([message], 'default_user', 4000, 0.1);
-                        console.log('LLM Response:', llmResponse);
-                        // let cleanedResponse = llmResponse.replace(/```json/g, '"').replace(/```/g, '"').trim();
-                        // print('CLEANED JSON: ', cleanedResponse);
                         let jsonLlmResponse = JSON.parse(llmResponse);
-
-                        console.log('parsed json: ',jsonLlmResponse);
-
 
                         // Save to Supabase
                         const {status, error} = await supabase
@@ -87,8 +78,6 @@ export async function POST(req) {
                             resume_data: jsonLlmResponse
                             }
                           ]);
-                        console.log('SUPABASE STATUS: ', status);
-                        console.log('SUPABASE error: ', error);
                         if (error) {
                           console.error('Error inserting into Supabase:', error);
                           throw error;

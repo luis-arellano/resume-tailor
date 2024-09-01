@@ -16,6 +16,7 @@ const ResumeDisplay = () => {
 
   useEffect(() => {
     if(selectedModel){
+      console.log('selectedModel:', selectedModel);
       setEditableResume(selectedModel.resume_data);
     }
     
@@ -31,6 +32,7 @@ const ResumeDisplay = () => {
 
 
   const handleBlur = (fieldPath) => {
+    console.log('hanlde BLUR!!');
     const ref = refs.current[fieldPath];
     const newValue = ref.textContent;  // Access the content directly from the DOM node
     const currentValue = _.get(editableResume, fieldPath);
@@ -41,6 +43,7 @@ const ResumeDisplay = () => {
       setEditableResume(updatedResume);
 
       // Save changes to the backend
+      console.log('saving resume to backend');
       saveResumeToBackend(updatedResume);
       // TODO need to make sure that resumes on context reflect the changes
       const highlightedContent = highlightKeywords(newValue);
@@ -54,17 +57,18 @@ const ResumeDisplay = () => {
       formData.append('resume_json', JSON.stringify(updatedResume));
       formData.append('resume_id', selectedModel.id)
       const response = await apiClient.post('/resume/update_resume', formData);
-    
+      console.log('back end response:', response);
     // Update the context with the new resume data
-    if (response.status === 200){
-      console.log("updated resume RESPONSE:", response);
-      console.log('updated resume:', updatedResume);
-      updateModel({...selectedModel, resume_data: updatedResume});
-    }
+    // if (response.status === 200){
+    //   console.log("updated resume RESPONSE:", response);
+    //   console.log('updated resume:', updatedResume);
+      
+    // }
 
    } catch(err){
       console.error(err);
     }
+    updateModel({...selectedModel, resume_data: updatedResume});
   }
 
   // Dynamically create contentEditable fields

@@ -51,7 +51,7 @@ progress::-webkit-progress-value {
   margin-left: auto;
   margin-right: auto;
   background: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: adds shadow for better visibility on screen */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4); /* Optional: adds shadow for better visibility on screen */
   position: relative;
   overflow: hidden; /* Ensures no content spills over */
 }

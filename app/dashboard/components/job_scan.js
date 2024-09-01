@@ -67,7 +67,6 @@ function JobScan() {
       const response = await apiClient.post('/resume/post', formData);
 
       if (response) {
-        console.log('File uploaded successfully:', response);
         setUploadStatus('Resume uploaded successfully!');
         setRefreshKey(prevKey => prevKey + 1); // Update the refreshKey to trigger a refresh
       }
