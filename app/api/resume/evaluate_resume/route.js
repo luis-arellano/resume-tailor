@@ -9,12 +9,8 @@ export async function POST(req) {
     const data = await req.formData();
     const resume = data.get('resume');
     const job_description = data.get('job_description');
+    const resume_id = data.get('resume_id');
     
-    const profile_id = data.get('profile_id'); // Need to make sure I have this
-    const resume_id = data.get('resume_id'); // Need to make sure I have this
-    console.log('Resume:', resume);
-    console.log('json resume:', resume);
-
     // Instantiate connection with Supabase
     const cookieStore = cookies();
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore });

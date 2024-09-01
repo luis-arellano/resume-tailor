@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { ModelContext} from '../context';
 import { LoadContext } from '../context';
 import apiClient from '@/libs/api';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { set } from 'lodash';
+import { ModelContext } from '../context';
 
 
 const loader = <span className="loading loading-spinner loading-md"></span>
@@ -18,7 +17,8 @@ function JobScan() {
   const [uploadStatus, setUploadStatus] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [resumes, setResumes] = useState([])
-  const { refreshKey, setRefreshKey, selectedModel, setSelectedModel, setKeyWords, setAnalysis } = LoadContext(); //need to provide on context
+  const { refreshKey, setRefreshKey, selectedModel, setSelectedModel, setKeyWords, setAnalysis, setLatestJobScan, refreshJobScan } = LoadContext();
+
   const [resumeFile, setResumeFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
 
@@ -116,15 +116,16 @@ function JobScan() {
       const requestForm = new FormData();
       requestForm.append('resume',resume_data);
       requestForm.append('job_description', jobDescription);
+      requestForm.append('resume_id', selectedModel.id);
       const response = await apiClient.post('/resume/evaluate_resume', requestForm);
-      console.log('LLM Response:', response);
-      setKeyWords(response.key_words.split());
-      setAnalysis(response.feedback);
-    }
-    catch (error) {
+      setLatestJobScan({
+        keywords: response.key_words,
+        job_analysis: response.feedback
+      });
+      refreshJobScan();
+    } catch (error) {
       console.error('Error evaluating resume:', error);
-    }
-    finally {
+    } finally {
       setLoadingAnalysis(false);
     }  
   };

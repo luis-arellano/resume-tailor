@@ -45,7 +45,7 @@ const ResumeDisplay = () => {
       formData.append('resume_id', selectedModel.id)
       const response = await apiClient.post('/resume/update_resume', formData);
     
-    // Update teh context with the new resume data
+    // Update the context with the new resume data
     if (response.status === 200){
       console.log("updated resume RESPONSE:", response);
       console.log('updated resume:', updatedResume);
