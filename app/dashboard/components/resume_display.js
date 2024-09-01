@@ -10,7 +10,7 @@ import apiClient from '@/libs/api';
  * -download as pdf
  */
 const ResumeDisplay = () => {
-  const { selectedModel, contextLoading, updateModel } = useContext(ModelContext);
+  const { selectedModel, contextLoading, updateModel, latestJobScan } = useContext(ModelContext);
   const [editableResume, setEditableResume] = useState(selectedModel);
   const refs = useRef({});
 
@@ -20,6 +20,14 @@ const ResumeDisplay = () => {
     }
     
   }, [selectedModel]);
+
+  const highlightKeywords = (text) => {
+    if (!latestJobScan || !latestJobScan.keywords) return text;
+
+    const keywords = latestJobScan.keywords.split(', ');
+    const regex = new RegExp(`\\b(${keywords.join('|')})\\b`, 'gi');
+    return text.replace(regex, '<span class="bg-green-200">$1</span>');
+  };
 
 
   const handleBlur = (fieldPath) => {
@@ -35,6 +43,8 @@ const ResumeDisplay = () => {
       // Save changes to the backend
       saveResumeToBackend(updatedResume);
       // TODO need to make sure that resumes on context reflect the changes
+      const highlightedContent = highlightKeywords(newValue);
+      ref.innerHTML = highlightedContent;
     }
   };
 
@@ -64,6 +74,8 @@ const ResumeDisplay = () => {
     }
 
     const Tag = tag;
+    const content = _.get(editableResume, fieldPath) || defaultValue;
+    const highlightedContent = highlightKeywords(content);
 
     return (
       <Tag
@@ -73,8 +85,9 @@ const ResumeDisplay = () => {
         onBlur={() => handleBlur(fieldPath)}
         className={`cursor-text hover:bg-blue-100 ${className}`}
         suppressContentEditableWarning={true}
+        dangerouslySetInnerHTML={{ __html: highlightedContent }}
       >
-        {_.get(editableResume, fieldPath) || defaultValue}
+        {/* {_.get(editableResume, fieldPath) || defaultValue} */}
       </Tag>
     );
   };
