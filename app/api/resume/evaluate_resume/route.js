@@ -20,12 +20,12 @@ export async function POST(req) {
     const user_id = session?.user?.id
 
 
-    const get_key_words = 'You are a highly skilled recruiter consultant.' +
+    const get_key_words = 'You need to optimize the resume for an ATS (application tracking system).' +
      'Your task is to create a list of keywords that are relevant to the job description.' +
      'The job description is as follows: ' + job_description + 
      '. Please provide a list of keywords that are relevant to the job description. That would be used by an ATS (application tracking system)'+
      'Use only keywords that would be found in a resume and would be useful when trying to screen resumes. '+
-     'The keywords should be separated by commas. '+
+     'The keywords should be separated by commas. Try to use single words instead of compunded words as that would be more useful for the ATS.'+
      'For example, if the job description is "The ideal candidate will have experience with Python, Java, and C++", '+
      'the keywords would be "Python, Java, C++". Please use only keywords relevant to Experience, Work History, Skills and Competencies'+
      'do not include keywords that are irrelevant such as 401k, PTO, perks'+
