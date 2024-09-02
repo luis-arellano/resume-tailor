@@ -1,8 +1,10 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { FaPlus } from 'react-icons/fa';  // Import the plus icon
+import { FaPlus, FaDownload } from 'react-icons/fa';  // Import the plus icon
 import _ from 'lodash';  // Import lodash
 import { ModelContext } from '../context';
 import apiClient from '@/libs/api';
+import { useReactToPrint } from 'react-to-print';
+
 
 /***
  * Renders a resume as a PDF form
@@ -14,6 +16,7 @@ const ResumeDisplay = () => {
   const { selectedModel, contextLoading, updateModel, latestJobScan } = useContext(ModelContext);
   const [editableResume, setEditableResume] = useState(selectedModel);
   const refs = useRef({});
+  const resumeRef = useRef(null);
 
   useEffect(() => {
     if(selectedModel){
@@ -22,6 +25,10 @@ const ResumeDisplay = () => {
     }
     
   }, [selectedModel]);
+
+  const handlePrint = useReactToPrint({
+    content: () => resumeRef.current,
+  });
 
   const updateResumeField = (fieldPath, newValue) => {
     const updatedResume = _.cloneDeep(editableResume);
@@ -52,7 +59,7 @@ const ResumeDisplay = () => {
 
     const keywords = latestJobScan.keywords.split(', ');
     const regex = new RegExp(`\\b(${keywords.join('|')})\\b`, 'gi');
-    return text.replace(regex, '<span class="bg-green-200">$1</span>');
+    return text.replace(regex, '<span class="keyword-highlight">$1</span>');
   };
 
 
@@ -124,7 +131,17 @@ const ResumeDisplay = () => {
   }
 
   return (
-    <div className="a4-size">
+
+    <div className='relative'>
+      <button
+        onClick={handlePrint}
+        className="absolute top-2 right-2 btn btn-primary btn-sm normal-case flex items-center gap-2"
+      >
+        <FaDownload className="mr-2" />
+        Download PDF
+      </button>
+
+    <div ref={resumeRef} className="a4-size">
 
       <div className="flex bg-zinc-50 p-4 mb-4">
         {/* <!-- Left Column for Name and Position --> */}
@@ -151,18 +168,13 @@ const ResumeDisplay = () => {
               <div key={index} className="mb-6">
                 <div className="flex justify-between items-baseline">
 
-                  {createEditableField(`Experience[${index}].Title`, '', 'p', 'text-lg font-semibold')}  
-
-                  {/* <span className="text-xs text-gray-600">{exp.Duration}</span> */}
+                  {createEditableField(`Experience[${index}].Company`, '', 'h3', 'text-lg font-semibold')}
                   <div className="text-xs text-gray-600">
                     {createEditableField(`Experience[${index}].StartDate`, '', 'span')} - {createEditableField(`Experience[${index}].EndDate`, '', 'span')}
                   </div>
-
                 </div>
-                {/* <p className="italic text-sm text-gray-600">{exp.Company}</p> */}
-                {createEditableField(`Experience[${index}].Company`, '', 'p', 'italic text-sm text-gray-600')}  
+                {createEditableField(`Experience[${index}].Title`, '', 'h4', 'italic text-base text-gray-800')}
 
-                <br/>
                 <p className="text-sm mb-2">{exp.Overview}</p>
                 {exp.Responsibilities && (
                   <ul className="list-disc pl-5 text-sm">
@@ -173,7 +185,7 @@ const ResumeDisplay = () => {
                     
                       <button 
                         onClick={() => addResponsibility(index)}
-                        className="xs-text hover:text-blue-500 transition-colors duration-200 flex items-center opacity-0 hover:opacity-100"
+                        className="xs-text mb-0 hover:text-blue-500 transition-colors duration-200 flex items-center opacity-0 hover:opacity-100"
                       >
                           <span className="inline-flex items-center justify-center w-5 h-5 mr-2 border border-blue-500 rounded-full">
                             <FaPlus className="w-3 h-3" />
@@ -231,6 +243,7 @@ const ResumeDisplay = () => {
           </>
         )}
       </div>
+    </div>
     </div>
   );
 };

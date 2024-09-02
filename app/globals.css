@@ -56,6 +56,17 @@ progress::-webkit-progress-value {
   overflow: hidden; /* Ensures no content spills over */
 }
 
+.keyword-highlight {
+  background-color: #e2f0cb; /* Light green background for screen view */
+}
+
+@media print {
+  .keyword-highlight {
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+}
+
 @media print {
   .a4-size {
     box-shadow: none; /* Removes shadow when printing */
