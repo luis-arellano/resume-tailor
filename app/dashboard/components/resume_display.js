@@ -3,13 +3,14 @@ import { FaPlus, FaDownload } from 'react-icons/fa';  // Import the plus icon
 import _ from 'lodash';  // Import lodash
 import { ModelContext } from '../context';
 import apiClient from '@/libs/api';
+import ResumeControls from './resume_controls';
 import { useReactToPrint } from 'react-to-print';
-
+import html2canvas from 'html2canvas-pro';
+import jsPDF from 'jspdf';
 
 /***
  * Renders a resume as a PDF form
  * - Have a loader
- * -have a delete button (probably on the job scan)
  * -download as pdf
  */
 const ResumeDisplay = () => {
@@ -19,37 +20,40 @@ const ResumeDisplay = () => {
   const resumeRef = useRef(null);
 
   useEffect(() => {
-    if(selectedModel){
+    if (selectedModel) {
       console.log('selectedModel:', selectedModel);
       setEditableResume(selectedModel.resume_data);
     }
-    
+
   }, [selectedModel]);
 
   const handlePrint = useReactToPrint({
     content: () => resumeRef.current,
   });
 
+  const updateResumeArray = (arrayPath, action, index = null) => {
+    const updatedResume = _.cloneDeep(editableResume);
+    const array = _.get(updatedResume, arrayPath);
+
+    if (action === 'add') {
+      if (!array) {
+        _.set(updatedResume, arrayPath, []);
+      }
+      _.get(updatedResume, arrayPath).push(`New ${arrayPath.split('.').pop().slice(0, -1)}`);
+    } else if (action === 'remove' && index !== null) {
+      _.get(updatedResume, arrayPath).splice(index, 1);
+    }
+
+    setEditableResume(updatedResume);
+    saveResumeToBackend(updatedResume);
+  };
+
+  const addItem = (arrayPath) => updateResumeArray(arrayPath, 'add');
+  const removeItem = (arrayPath, index) => updateResumeArray(arrayPath, 'remove', index);
+
   const updateResumeField = (fieldPath, newValue) => {
     const updatedResume = _.cloneDeep(editableResume);
     _.set(updatedResume, fieldPath, newValue);
-    setEditableResume(updatedResume);
-    saveResumeToBackend(updatedResume);
-  };
-
-  const addResponsibility = (expIndex) => {
-    const updatedResume = _.cloneDeep(editableResume);
-    if (!updatedResume.Experience[expIndex].Responsibilities) {
-      updatedResume.Experience[expIndex].Responsibilities = [];
-    }
-    updatedResume.Experience[expIndex].Responsibilities.push('New responsibility');
-    setEditableResume(updatedResume);
-    saveResumeToBackend(updatedResume);
-  };
-
-  const removeResponsibility = (expIndex, resIndex) => {
-    const updatedResume = _.cloneDeep(editableResume);
-    updatedResume.Experience[expIndex].Responsibilities.splice(resIndex, 1);
     setEditableResume(updatedResume);
     saveResumeToBackend(updatedResume);
   };
@@ -71,30 +75,29 @@ const ResumeDisplay = () => {
 
     if (newValue !== currentValue) {
 
-      if (newValue === '' && fieldPath.includes('Responsibilities')) {
-        const [expIndex, resIndex] = fieldPath.match(/\d+/g).map(Number);
-        removeResponsibility(expIndex, resIndex);
+      if (newValue === '') {
+        const [arrayPath, index] = fieldPath.match(/(.+)\[(\d+)\]/).slice(1);
+        removeItem(arrayPath, parseInt(index, 10));
       } else {
         updateResumeField(fieldPath, newValue);
-        // saveResumeToBackend(updatedResume);
         const highlightedContent = highlightKeywords(newValue);
         ref.innerHTML = highlightedContent;
+      }
     }
-  }
   };
 
   const saveResumeToBackend = async (updatedResume) => {
-    try{
+    try {
       const formData = new FormData();
       formData.append('resume_json', JSON.stringify(updatedResume));
       formData.append('resume_id', selectedModel.id)
       const response = await apiClient.post('/resume/update_resume', formData);
       console.log('back end response:', response);
 
-   } catch(err){
+    } catch (err) {
       console.error(err);
     }
-    updateModel({...selectedModel, resume_data: updatedResume});
+    updateModel({ ...selectedModel, resume_data: updatedResume });
   }
 
   // Dynamically create contentEditable fields
@@ -132,118 +135,126 @@ const ResumeDisplay = () => {
 
   return (
 
-    <div className='relative'>
-      <button
-        onClick={handlePrint}
-        className="absolute top-2 right-2 btn btn-primary btn-sm normal-case flex items-center gap-2"
-      >
-        <FaDownload className="mr-2" />
-        Download PDF
-      </button>
+    <div className='container mx-auto'>
 
-    <div ref={resumeRef} className="a4-size">
+      {/* Resume Controls */}
+      <section className="bg-white border border-gray-300 m-4 p-2">
+        <ResumeControls onDownload={handlePrint} />
+      </section>
 
-      <div className="flex bg-zinc-50 p-4 mb-4">
-        {/* <!-- Left Column for Name and Position --> */}
-        <div className="flex-1">
 
-          {createEditableField('ContactInformation.Name', 'No Name Provided', 'h1', 'text-2xl font-bold')}
-          {createEditableField('ContactInformation.Position', '', 'p', 'text-sm text-gray-600')}          
+      <div ref={resumeRef} className="a4-size">
 
+        <div className="flex bg-zinc-50 p-4 mb-4">
+          {/* <!-- Left Column for Name and Position --> */}
+          <div className="flex-1">
+
+            {createEditableField('ContactInformation.Name', 'No Name Provided', 'h1', 'text-2xl font-bold')}
+            {createEditableField('ContactInformation.Position', '', 'p', 'text-sm text-gray-600')}
+
+          </div>
+
+          {/* <!-- Right Column for Contact Information --> */}
+          <div className="flex-1 text-right text-xs italic">
+            {createEditableField('ContactInformation.Email', 'No Email Provided', 'p')}
+            {createEditableField('ContactInformation.Phone', 'No Phone Provided', 'p')}
+            {createEditableField('ContactInformation.Location', 'No Location Provided', 'p', 'mb-2')}
+          </div>
         </div>
 
-        {/* <!-- Right Column for Contact Information --> */}
-        <div className="flex-1 text-right text-xs italic">
-          {createEditableField('ContactInformation.Email', 'No Email Provided', 'p')}
-          {createEditableField('ContactInformation.Phone', 'No Phone Provided', 'p')}
-          {createEditableField('ContactInformation.Location', 'No Location Provided', 'p', 'mb-2')}
-        </div>
-      </div>
+        <div className='p-4'>
+          {editableResume.Experience && editableResume.Experience.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mb-2">Work Experience</h2>
+              {editableResume.Experience.map((exp, index) => (
+                <div key={index} className="mb-6">
+                  <div className="flex justify-between items-baseline">
 
-      <div className='p-4'>
-        {editableResume.Experience && editableResume.Experience.length > 0 && (
-          <>
-            <h2 className="text-xl font-semibold mb-2">Work Experience</h2>
-            {editableResume.Experience.map((exp, index) => (
-              <div key={index} className="mb-6">
-                <div className="flex justify-between items-baseline">
-
-                  {createEditableField(`Experience[${index}].Company`, '', 'h3', 'text-lg font-semibold')}
-                  <div className="text-xs text-gray-600">
-                    {createEditableField(`Experience[${index}].StartDate`, '', 'span')} - {createEditableField(`Experience[${index}].EndDate`, '', 'span')}
+                    {createEditableField(`Experience[${index}].Company`, '', 'h3', 'text-lg font-semibold')}
+                    <div className="text-xs text-gray-600">
+                      {createEditableField(`Experience[${index}].StartDate`, '', 'span')} - {createEditableField(`Experience[${index}].EndDate`, '', 'span')}
+                    </div>
                   </div>
-                </div>
-                {createEditableField(`Experience[${index}].Title`, '', 'h4', 'italic text-base text-gray-800')}
+                  {createEditableField(`Experience[${index}].Title`, '', 'h4', 'italic text-base text-gray-800')}
 
-                <p className="text-sm mb-2">{exp.Overview}</p>
-                {exp.Responsibilities && (
-                  <ul className="list-disc pl-5 text-sm">
-                    {exp.Responsibilities.map((res, resIndex) => (
-                      createEditableField(`Experience[${index}].Responsibilities[${resIndex}]`, '', 'li')
-                    ))}
-                    <li className="list-none">
-                    
-                      <button 
-                        onClick={() => addResponsibility(index)}
-                        className="xs-text mb-0 hover:text-blue-500 transition-colors duration-200 flex items-center opacity-0 hover:opacity-100"
-                      >
-                          <span className="inline-flex items-center justify-center w-5 h-5 mr-2 border border-blue-500 rounded-full">
-                            <FaPlus className="w-3 h-3" />
+                  <p className="text-sm mb-1">{exp.Overview}</p>
+                  {exp.Responsibilities && (
+                    <ul className="list-disc pl-5 text-sm">
+                      {exp.Responsibilities.map((res, resIndex) => (
+                        createEditableField(`Experience[${index}].Responsibilities[${resIndex}]`, '', 'li')
+                      ))}
+                      <li className="list-none">
+
+                        <button
+                          onClick={() => addItem(`Experience[${index}].Responsibilities`)}
+                          className=" no-print xs-text h-0 mb mt-2 hover:text-blue-500 transition-colors duration-200 flex items-center opacity-20 hover:opacity-100"
+                        >
+                          <span className=" no-print inline-flex items-center justify-center w-3 h-3 mr-2 border border-blue-500 rounded-full">
+                            <FaPlus className="w-2 h-2" />
                           </span>
-                        Add
-                      </button>
-                    </li>
+                          Add
+                        </button>
+                      </li>
 
-                  </ul>
-                )}
-              </div>
-            ))}
-          </>
-        )}
-
-        {editableResume.Education && editableResume.Education.length > 0 && (
-          <>
-            <h2 className="text-xl font-semibold mb-2">Education</h2>
-            {editableResume.Education.map((edu, index) => (
-              <div key={index} className="mb-4">
-                <div className="flex justify-between items-baseline">
-                  {createEditableField(`Education[${index}].School`, '', 'h3', 'text-sm font-semibold')}
-                  {createEditableField(`Education[${index}].Date`, '', 'span', 'text-xs text-gray-600')}
+                    </ul>
+                  )}
                 </div>
-                {createEditableField(`Education[${index}].Degree`, '', 'p', 'text-sm')}
-              </div>
-            ))}
-          </>
-        )}
-        {editableResume.Skills && editableResume.Skills.length > 0 && (
-          <>
-            <h2 className="text-xl font-semibold mb-2">Skills</h2>
-            <p className="text-sm">
-              {editableResume.Skills.map((skill, index) => (
-                <span key={index}>
-                  {createEditableField(`Skills[${index}]`, '', 'span')}
-                  {index < editableResume.Skills.length - 1 ? ', ' : ''}
-                </span>
               ))}
-            </p>
-          </>
-        )}
+            </>
+          )}
 
-        {editableResume.Languages && editableResume.Languages.length > 0 && (
-          <>
-            <h2 className="text-xl font-semibold mb-2">Languages</h2>
-            <p className="text-sm">
-              {editableResume.Languages.map((lang, index) => (
-                <span key={index}>
-                  {createEditableField(`Languages[${index}]`, '', 'span')}
-                  {index < editableResume.Languages.length - 1 ? ', ' : ''}
-                </span>
+          {editableResume.Education && editableResume.Education.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mb-2">Education</h2>
+              {editableResume.Education.map((edu, index) => (
+                <div key={index} className="mb-4">
+                  <div className="flex justify-between items-baseline">
+                    {createEditableField(`Education[${index}].School`, '', 'h3', 'text-sm font-semibold')}
+                    {createEditableField(`Education[${index}].Date`, '', 'span', 'text-xs text-gray-600')}
+                  </div>
+                  {createEditableField(`Education[${index}].Degree`, '', 'p', 'text-sm')}
+                </div>
               ))}
-            </p>
-          </>
-        )}
+            </>
+          )}
+          {editableResume.Skills && editableResume.Skills.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mb-2">Skills</h2>
+              <p className="text-xs">
+                {editableResume.Skills.map((skill, index) => (
+                  <span key={index}>
+                    {createEditableField(`Skills[${index}]`, '', 'span')}
+                    {index < editableResume.Skills.length - 1 ? ', ' : ''}
+                  </span>
+                ))}
+                <button
+                  onClick={() => addItem('Skills')}
+                  className="no-print xs-text mb-0 hover:text-blue-500 transition-colors duration-200 flex items-center opacity-20 hover:opacity-100"
+                >
+                  <span className="no-print inline-flex items-center justify-center w-3 h-3 mr-2 border border-blue-500 rounded-full">
+                    <FaPlus className="w-2 h-2" />
+                  </span>
+                  Add Skill
+                </button>
+              </p>
+            </>
+          )}
+
+          {editableResume.Languages && editableResume.Languages.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mb-2">Languages</h2>
+              <p className="text-sm">
+                {editableResume.Languages.map((lang, index) => (
+                  <span key={index}>
+                    {createEditableField(`Languages[${index}]`, '', 'span')}
+                    {index < editableResume.Languages.length - 1 ? ', ' : ''}
+                  </span>
+                ))}
+              </p>
+            </>
+          )}
+        </div>
       </div>
-    </div>
     </div>
   );
 };

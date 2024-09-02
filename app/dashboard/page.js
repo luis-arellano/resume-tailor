@@ -1,8 +1,4 @@
 "use client";
-import ButtonAccount from "@/components/ButtonAccount";
-import { useState } from 'react';
-import apiClient from "@/libs/api";
-import { useEffect } from "react";
 import ResumeDisplay from "./components/resume_display";
 import JobScan from "./components/job_scan";
 import DashboardHeader from "./components/header";
@@ -25,7 +21,6 @@ export default function Dashboard() {
         </main>
 
         <section className="flex p-8 w-full mx-auto">
-
           <div className="flex flex-col w-2/5 overflow-x-scroll">
               <ScoreAnalysis />
           </div>  

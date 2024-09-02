@@ -61,6 +61,12 @@ progress::-webkit-progress-value {
 }
 
 @media print {
+  .no-print {
+    display: none;
+  }
+}
+
+@media print {
   .keyword-highlight {
     background-color: transparent !important;
     color: inherit !important;
