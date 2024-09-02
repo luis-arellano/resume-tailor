@@ -117,10 +117,7 @@ function JobScan() {
       requestForm.append('job_description', jobDescription);
       requestForm.append('resume_id', selectedModel.id);
       const response = await apiClient.post('/resume/evaluate_resume', requestForm);
-      setLatestJobScan({
-        keywords: response.key_words,
-        job_analysis: response.feedback
-      });
+      setLatestJobScan(response);
       refreshJobScan();
     } catch (error) {
       console.error('Error evaluating resume:', error);

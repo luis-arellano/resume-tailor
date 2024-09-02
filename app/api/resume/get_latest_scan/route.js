@@ -25,8 +25,7 @@ export async function GET(req) {
         .eq('user_id', userId)
         .eq('resume_id', resumeId)
         .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
 
     if (error) {
         return new NextResponse(JSON.stringify({ error: error.message }), {
@@ -35,7 +34,9 @@ export async function GET(req) {
         });
     }
 
-    return new NextResponse(JSON.stringify(data), {
+    // Return null if no data found
+    const latestScan = data && data.length > 0 ? data[0] : null;
+    return new NextResponse(JSON.stringify(latestScan), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
     });
