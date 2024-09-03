@@ -21,7 +21,7 @@ function DashboardHeader() {
                     width={32}
                     height={32}
                 />
-                <span className="text-lg font-bold">Resume Tailor</span>
+                <span className="text-lg font-bold">Magic Resume</span>
 
             </div>
 

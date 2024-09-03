@@ -135,10 +135,10 @@ const ResumeDisplay = () => {
 
   return (
 
-    <div className='container mx-auto'>
+    <div className='container mx-2'>
 
       {/* Resume Controls */}
-      <section className="bg-white border border-gray-300 m-4 p-2">
+      <section className="bg-white border border-1 border-grey rounded-lg max-w-4xl mb-2 p-2 mx-auto">
         <ResumeControls onDownload={handlePrint} />
       </section>
 

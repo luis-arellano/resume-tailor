@@ -127,7 +127,7 @@ function JobScan() {
   };
 
   return (
-    <div className="flex w-full mx-auto bg-white rounded-lg shadow-md">
+    <div className="flex w-full mx-auto bg-white border border-1 border-grey rounded-lg shadow-md">
 
       <div className="flex flex-col w-2/4 p-4 border-r border-gray-300">
 
