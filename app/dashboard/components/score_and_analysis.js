@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FaCheckCircle, FaTimesCircle, FaInfoCircle } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaInfoCircle, FaCoffee } from 'react-icons/fa';
 import { ModelContext } from '../context';
 import apiClient from '@/libs/api';
 
@@ -57,12 +57,14 @@ const ScoreAnalysis = () => {
     }, [latestJobScan, selectedModel]);
 
     if (isLoading) {
-        return <div className="w-full p-4 mx-auto bg-white border border-1 border-grey rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-2">Resume Analysis</h2>
-            <div className="flex items-center justify-center h-40">
-                <div className="loading loading-spinner loading-lg"></div>
+        return (
+            <div className="w-full p-4 mx-auto bg-white border border-1 border-grey rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-2">Resume Analysis</h2>
+                <div className="flex items-center justify-center h-40">
+                    <div className="loading loading-spinner loading-lg"></div>
+                </div>
             </div>
-        </div>;
+        );
     }
 
     return (
@@ -71,11 +73,11 @@ const ScoreAnalysis = () => {
 
             {latestJobScan && (
                 <div className="mb-4 ml-4">
-                <h3 className="text-lg font-semibold">Composite Score</h3>
-                <div className="text-3xl font-bold text-green-600">{compositeScore}</div>
-                <p className="text-sm text-gray-400">
-                    Matched {matchedKeywords.length} out of {latestJobScan.keywords ? latestJobScan.keywords.split(', ').length : 0} keywords
-                </p>
+                    <h3 className="text-lg font-semibold">Composite Score</h3>
+                    <div className="text-3xl font-bold text-green-600">{compositeScore}</div>
+                    <p className="text-sm text-gray-400">
+                        Matched {matchedKeywords.length} out of {latestJobScan.keywords ? latestJobScan.keywords.split(', ').length : 0} keywords
+                    </p>
                 </div>
             )}
 
@@ -112,8 +114,8 @@ const ScoreAnalysis = () => {
                 {latestJobScan ? (
                     <div className='bg-gray-100 p-4 rounded-lg'>
                         <p className='whitespace-pre-wrap'>{latestJobScan.job_analysis || 'No analysis available for this job scan.'}</p>
-                         </div>
-                    
+                    </div>
+
                 ) : (
                     <div className="bg-gray-100 p-4 rounded-lg">
                         <p className="text-gray-600">
@@ -126,6 +128,14 @@ const ScoreAnalysis = () => {
                         </ol>
                     </div>
                 )}
+            </div>
+
+            <div className="mt-4 text-center text-xs bg-gradient-to-r from-green-100 to-green-200 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <p className="text-sm mb-2 font-semibold text-green-800">If you're getting value from this, you can show your support:</p>
+                <a href="https://buymeacoffee.com/7gdwx9h9vc" target="_blank" rel="noopener noreferrer" className="inline-flex items-center bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition-colors duration-300">
+                    <span className="mr-2">Buy me a coffee</span>
+                    <FaCoffee className="h-5 w-5 animate-pulse" />
+                </a>
             </div>
         </div>
     );

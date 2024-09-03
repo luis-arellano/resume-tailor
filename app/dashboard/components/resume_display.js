@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { FaPlus, FaDownload } from 'react-icons/fa';  // Import the plus icon
+import { FaPlus, FaDownload, FaRegTrashAlt } from 'react-icons/fa';  // Import the plus icon
 import _ from 'lodash';  // Import lodash
 import { ModelContext } from '../context';
 import apiClient from '@/libs/api';
@@ -68,22 +68,20 @@ const ResumeDisplay = () => {
 
 
   const handleBlur = (fieldPath) => {
-    console.log('hanlde BLUR!!');
     const ref = refs.current[fieldPath];
     const newValue = ref.textContent;  // Access the content directly from the DOM node
     const currentValue = _.get(editableResume, fieldPath);
 
     if (newValue !== currentValue) {
-
-      if (newValue === '') {
-        const [arrayPath, index] = fieldPath.match(/(.+)\[(\d+)\]/).slice(1);
-        removeItem(arrayPath, parseInt(index, 10));
-      } else {
-        updateResumeField(fieldPath, newValue);
-        const highlightedContent = highlightKeywords(newValue);
-        ref.innerHTML = highlightedContent;
-      }
+      updateResumeField(fieldPath, newValue);
+      const highlightedContent = highlightKeywords(newValue);
+      ref.innerHTML = highlightedContent;
     }
+  };
+
+
+  const handleDelete = (arrayPath, index) => {
+    removeItem(arrayPath, index);
   };
 
   const saveResumeToBackend = async (updatedResume) => {
@@ -120,7 +118,6 @@ const ResumeDisplay = () => {
         suppressContentEditableWarning={true}
         dangerouslySetInnerHTML={{ __html: highlightedContent }}
       >
-        {/* {_.get(editableResume, fieldPath) || defaultValue} */}
       </Tag>
     );
   };
@@ -177,12 +174,21 @@ const ResumeDisplay = () => {
                   </div>
                   {createEditableField(`Experience[${index}].Title`, '', 'h4', 'italic text-base text-gray-800')}
 
-                  <p className="text-sm mb-1">{exp.Overview}</p>
+                  {createEditableField(`Experience[${index}].Overview`, '', 'p', 'text-sm mb-1')}
                   {exp.Responsibilities && (
                     <ul className="list-disc pl-5 text-sm">
                       {exp.Responsibilities.map((res, resIndex) => (
-                        createEditableField(`Experience[${index}].Responsibilities[${resIndex}]`, '', 'li')
+                        <li key={resIndex} className="relative mb-2 group">
+                          {createEditableField(`Experience[${index}].Responsibilities[${resIndex}]`, '', 'span')}
+                          <button
+                      onClick={() => handleDelete(`Experience[${index}].Responsibilities`, resIndex)}
+                      className="absolute buttom-0 right-0 text-blue-500 hover:text-blue-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <FaRegTrashAlt className="w-3 h-3" />
+                    </button>
+                        </li>
                       ))}
+
                       <li className="list-none">
 
                         <button
