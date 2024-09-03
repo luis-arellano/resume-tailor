@@ -131,7 +131,7 @@ const ScoreAnalysis = () => {
             </div>
 
             <div className="mt-4 text-center text-xs bg-gradient-to-r from-green-100 to-green-200 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <p className="text-sm mb-2 font-semibold text-green-800">If you're getting value from this, you can show your support:</p>
+                <p className="text-sm mb-2 font-semibold text-green-800">If you&apos;re getting value from this, you can show your support:</p>
                 <a href="https://buymeacoffee.com/7gdwx9h9vc" target="_blank" rel="noopener noreferrer" className="inline-flex items-center bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition-colors duration-300">
                     <span className="mr-2">Buy me a coffee</span>
                     <FaCoffee className="h-5 w-5 animate-pulse" />
