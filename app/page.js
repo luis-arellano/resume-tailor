@@ -18,10 +18,10 @@ export default function Home() {
       <main >
         <Hero />
         <Problem />
-        <FeaturesAccordion />
-        <Pricing />
+        {/* <FeaturesAccordion /> */}
+        {/* <Pricing />
         <FAQ />
-        <CTA />
+        <CTA /> */}
       </main>
       <Footer />
     </div>

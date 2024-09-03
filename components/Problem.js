@@ -47,20 +47,20 @@ const Problem = () => {
           Recruiters are using AI to filter out resumes
         </h2>
         <p className="max-w-xl mx-auto text-lg opacity-90 leading-relaxed mb-12 md:mb-20">
-        Job hunting is tough, and generic resumes don’t cut it. Many resumes get lost in the crowd or fail to pass through applicant tracking systems (ATS).
+        Job hunting is tough, and generic resumes don&apos;t cut it. Many resumes get lost in the crowd or fail to pass through applicant tracking systems (ATS).
         Stand out with a resume that speaks directly to the job you want.
         </p>
 
         <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-6">
-          <Step emoji="🧑‍💻" text="8 hrs to add Stripe" />
+          <Step emoji="🧑‍💻" text="Hours crafting you&apos;re resume" />
 
           <Arrow extraStyle="max-md:-scale-x-100 md:-rotate-90" />
 
-          <Step emoji="😮‍💨" text="Struggle to find time" />
+          <Step emoji="🖥️" text="An ATS automatically rejects your resume" />
 
           <Arrow extraStyle="md:-scale-x-100 md:-rotate-90" />
 
-          <Step emoji="😔" text="Quit project" />
+          <Step emoji="😔" text="You feel hopeless" />
         </div>
       </div>
     </section>
