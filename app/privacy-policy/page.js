@@ -60,9 +60,8 @@ const PrivacyPolicy = () => {
           {`Last Updated: 2024-09-04
 
 Privacy Policy for Magic Resume
-Effective Date: September 4, 2024
 
-MagicPhoto ("we", "us", or "our") respects the privacy of its users ("you" or "your")
+MagicResume ("we", "us", or "our") respects the privacy of its users ("you" or "your")
 and is committed to protecting it through our compliance with this policy.
 This policy describes the types of information we may collect from you or that you may provide when you visit
 the website https://magic-resume.com (our "Website") and our practices for collecting, using,
