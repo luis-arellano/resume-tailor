@@ -62,43 +62,38 @@ const PrivacyPolicy = () => {
 Privacy Policy for Magic Resume
 Effective Date: September 4, 2024
 
-Introduction
-
-Welcome to Magic Resume (https://magic-resume.com). This Privacy Policy outlines how we collect, use, and protect your personal information.
-
+MagicPhoto ("we", "us", or "our") respects the privacy of its users ("you" or "your")
+and is committed to protecting it through our compliance with this policy.
+This policy describes the types of information we may collect from you or that you may provide when you visit
+the website https://magic-resume.com (our "Website") and our practices for collecting, using,
+maintaining, protecting, and disclosing that information.
 Information We Collect
 
-We collect the following personal information:
+1. Information We Collect About You
+We collect several types of information from and about users of our Website, including:
 
-Name
-Email address
-Payment information
+Personal Data: Information by which you may be personally identified, such as name, email address, and payment information.
+Non-Personal Data: We also collect non-personal information through web cookies
+(e.g., internet connection, the equipment you use to access our Website, and usage details).
 
-We also use web cookies to collect non-personal data.
+3. Disclosure of Your Information
+We may disclose aggregated information about our users, and information that does not identify any individual, without restriction. We may disclose personal information that we collect or you provide as described in this privacy policy:
 
-Purpose of Data Collection
+To contractors, service providers, and other third parties we use to support our business.
+To fulfill the purpose for which you provide it.
+For any other purpose disclosed by us when you provide the information.
+With your consent.
 
-We collect your data solely for order processing purposes.
+4. Data Security
+We have implemented measures designed to secure your personal information from accidental loss and from unauthorized access, use, alteration, and disclosure.
 
-Data Sharing
+5. Changes to Our Privacy Policy
+It is our policy to post any changes we make to our privacy policy on this page. If we make material changes to how we treat our users' personal information, we will notify you by email to the email address specified in your account.
 
-We do not share your personal information with any third parties.
+6. Contact Information
+To ask questions or comment about this privacy policy and our privacy practices, contact us at: arellano.luis88@gmail.com.
 
-Children's Privacy
-
-We do not knowingly collect any data from children under 13 years of age.
-
-Updates to the Privacy Policy
-
-If we make any changes to this Privacy Policy, we will notify you via email.
-
-Contact Information
-
-If you have any questions about this Privacy Policy, please contact us at arellano.luis@gmail.com.
-
-For all other inquiries, please visit our Contact Us page on the Website.
-
-By using Magic Resume, you consent to the terms of this Privacy Policy.`}
+By using Magic Resume, you agree to the terms of this Privacy Policy.`}
         </pre>
       </div>
     </main>
