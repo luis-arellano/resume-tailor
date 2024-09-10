@@ -57,39 +57,45 @@ const TOS = () => {
           className="leading-relaxed whitespace-pre-wrap"
           style={{ fontFamily: "sans-serif" }}
         >
-          {`Last Updated: September 26, 2023
+          {`Last Updated: September 9, 2024
 
-Welcome to ShipFast!
+Welcome to Magic Resume. By accessing or using our website (https://magic-resume.com), you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of these Terms, you may not use our service.
 
-These Terms of Service ("Terms") govern your use of the ShipFast website at https://shipfa.st ("Website") and the services provided by ShipFast. By using our Website and services, you agree to these Terms.
+1. Description of Service
+Magic Resume ("we", "us", "our") provides a web application that allows users to test their resumes against an Applicant Tracking System (ATS) and make improvements.
 
-1. Description of ShipFast
+2. User Accounts
+You may be required to create an account to use certain features of our service. You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account.
 
-ShipFast is a platform that offers a JavaScript code boilerplate to assist entrepreneurs in launching their startups more efficiently.
+3. User Data
+We collect and process personal data as described in our Privacy Policy (https://magic-resume.com/privacy-policy). By using our service, you consent to such processing and you warrant that all data provided by you is accurate.
 
-2. Ownership and Usage Rights
+4. Intellectual Property
+The content, features, and functionality of Magic Resume are owned by us and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
 
-When you purchase a package from ShipFast, you gain the right to download and use the code provided for creating applications. You own the code you create but do not have the right to resell it. We offer a full refund within 7 days of purchase, as specified in our refund policy.
+5. User Content
+You retain all rights to any content you submit, post, or display on or through our service. By submitting content, you grant us a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, and distribute your content for the purpose of providing and improving our service.
 
-3. User Data and Privacy
+6. Prohibited Uses
+You agree not to use Magic Resume:
+In any way that violates any applicable law or regulation
+To impersonate or attempt to impersonate the company, an employee, or any other person
+To engage in any other conduct that restricts or inhibits anyone's use of the service
 
-We collect and store user data, including name, email, and payment information, as necessary to provide our services. For details on how we handle your data, please refer to our Privacy Policy at https://shipfa.st/privacy-policy.
+7. Termination
+We may terminate or suspend your account and access to the service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
 
-4. Non-Personal Data Collection
+8. Limitation of Liability
+In no event shall Magic Resume, its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your use of or inability to use the service.
 
-We use web cookies to collect non-personal data for the purpose of improving our services and user experience.
+9. Changes to Terms
+We reserve the right to modify or replace these Terms at any time. We will notify users of any changes by email. Your continued use of the service after any such changes constitutes your acceptance of the new Terms.
 
-5. Governing Law
+10. Governing Law
+These Terms shall be governed and construed in accordance with the laws of the United States, without regard to its conflict of law provisions.
 
-These Terms are governed by the laws of France.
-
-6. Updates to the Terms
-
-We may update these Terms from time to time. Users will be notified of any changes via email.
-
-For any questions or concerns regarding these Terms of Service, please contact us at marc@shipfa.st.
-
-Thank you for using ShipFast!`}
+11. Contact Us
+If you have any questions about these Terms, please contact us at arellano.luis88@gmail.com.`}
         </pre>
       </div>
     </main>
