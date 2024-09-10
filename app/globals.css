@@ -47,7 +47,9 @@ progress::-webkit-progress-value {
 .a4-size {
   width: 210mm;
   /* height: 297mm; */
-  padding: 20px;
+  min-height: 297mm;
+  padding: 6mm;
+  /* padding: 20px; */
   margin-left: auto;
   margin-right: auto;
   background: white;
@@ -78,5 +80,8 @@ progress::-webkit-progress-value {
     box-shadow: none; /* Removes shadow when printing */
     overflow: visible;
     width: 100%;
+    height: auto; /* Allow height to adjust to content */
+    min-height: 0; /* Remove min-height for printing */
+    padding: 6mm; /* Remove padding for printing */
   }
 }
