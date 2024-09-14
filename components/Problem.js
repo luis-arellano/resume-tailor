@@ -52,7 +52,7 @@ const Problem = () => {
         </p>
 
         <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-6">
-          <Step emoji="🧑‍💻" text="Hours crafting you&apos;re resume" />
+          <Step emoji="🧑‍💻" text="Hours crafting your resume" />
 
           <Arrow extraStyle="max-md:-scale-x-100 md:-rotate-90" />
 
