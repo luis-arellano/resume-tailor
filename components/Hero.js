@@ -38,7 +38,7 @@ const Hero = () => {
           If you&apos;re not using a system to optimize your resume for ATS, you&apos;re already behind.
           It&apos;s an arms race, and others are already using ATS-optimized resumes to get interviews.
 
-          Don&apos;t be rejected without a human even seing your resume. You&apos;re skills deserve to be seen.
+          Don&apos;t be rejected without a human even seing your resume. Your skills deserve to be seen.
           Let us help you bypass the ATS gatekeepers.
     
           From application black hole to interview shortlist. ATS-optimize now.
