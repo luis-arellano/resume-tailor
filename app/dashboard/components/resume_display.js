@@ -58,10 +58,14 @@ const ResumeDisplay = () => {
     saveResumeToBackend(updatedResume);
   };
 
+  const escapeRegExp = (string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+  };
+
   const highlightKeywords = (text) => {
     if (!latestJobScan || !latestJobScan.keywords) return text;
 
-    const keywords = latestJobScan.keywords.split(', ');
+    const keywords = latestJobScan.keywords.split(', ').map(keyword => escapeRegExp(keyword));
     const regex = new RegExp(`\\b(${keywords.join('|')})\\b`, 'gi');
     return text.replace(regex, '<span class="keyword-highlight">$1</span>');
   };
