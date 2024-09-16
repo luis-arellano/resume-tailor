@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FaCheckCircle, FaTimesCircle, FaInfoCircle, FaCoffee } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaInfoCircle, FaCoffee, FaBriefcase } from 'react-icons/fa';
 import { ModelContext } from '../context';
 import apiClient from '@/libs/api';
+import ReactMarkdown from 'react-markdown';
 
 
 const ScoreAnalysis = () => {
 
-    const { selectedModel, latestJobScan, setLatestJobScan, jobScanRefreshKey } = useContext(ModelContext);
+    const { selectedModel, latestJobScan, setLatestJobScan, jobScanRefreshKey, jobScanStatus } = useContext(ModelContext);
     const [isLoading, setIsLoading] = useState(false);
     const [matchedKeywords, setMatchedKeywords] = useState([]);
     const [compositeScore, setCompositeScore] = useState(0);
     const [detailedScores, setDetailedScores] = useState([]);
+    const [showJobDescription, setShowJobDescription] = useState(false);
+
 
 
     useEffect(() => {
@@ -27,49 +30,72 @@ const ScoreAnalysis = () => {
                 setIsLoading(false);
             }
         };
-        fetchJobScan();
-    }, [selectedModel, jobScanRefreshKey]);
+        if (jobScanStatus !== 'processing') {
+            fetchJobScan();
+        }
+    }, [selectedModel, jobScanRefreshKey, jobScanStatus]);
 
     useEffect(() => {
         if (latestJobScan && selectedModel) {
-            console.log('latestJobScan:', selectedModel);
+            console.log('latestJobScan', latestJobScan);
             const resumeText = JSON.stringify(selectedModel.resume_data).toLowerCase();
             const keywords = latestJobScan.keywords ? latestJobScan.keywords.split(', ') : [];
             const matched = keywords.filter(keyword => resumeText?.includes(keyword.toLowerCase()));
             setMatchedKeywords(matched);
 
-            // // Parse detailed scores from job_analysis
-            // const scoreRegex = /Score: (\d+)\/5/g;
-            // const scores = [...latestJobScan.job_analysis.matchAll(scoreRegex)].map(match => parseInt(match[1]));
-            // setDetailedScores(scores);
-            // console.log('detailedScores:', detailedScores);
+            // Parse detailed scores from job_analysis
+            // const scoreRegex = /Score: (\d+)\/5/g;  // worked for gpt-4
+            // const scoreRegex = /\*\*Score:?\s*(\d+)\*\*/g;
+            const scoreRegex = /(?:Score:?\s*|Score\s*[:-]?\s*)(\d+)(?:\s*\/\s*5|\s*out of\s*5)?/gi;
+
+            const scores = [...latestJobScan.job_analysis.matchAll(scoreRegex)].map(match => parseInt(match[1]));
+            setDetailedScores(scores);
 
             // Calculate composite score
             const keywordScore = (matchedKeywords.length / keywords.length) * 100;
-            // const analysisScore = (scores.reduce((a, b) => a + b, 0) / (scores.length * 5)) * 100;
-            // const newCompositeScore = Math.round((keywordScore + analysisScore) / 2);
-            setCompositeScore(Math.round(keywordScore));
+            const analysisScore = (scores.reduce((a, b) => a + b, 0) / (scores.length * 5)) * 100;
+            const newCompositeScore = Math.round((keywordScore + analysisScore) / 2);
+            setCompositeScore(Math.round(newCompositeScore));
+
+            console.log('Scores:', { keywordScore, analysisScore, newCompositeScore, matched, keywords, scores });
         } else {
             setMatchedKeywords([]);
             setCompositeScore(0);
-            // setDetailedScores([]);
+            setDetailedScores([]);
         }
     }, [latestJobScan, selectedModel]);
 
-    if (isLoading) {
+
+    if (isLoading || jobScanStatus === 'processing') {
         return (
             <div className="w-full p-4 mx-auto bg-white border border-1 border-grey rounded-lg shadow-md">
                 <h2 className="text-xl font-bold mb-2">Resume Analysis</h2>
                 <div className="flex items-center justify-center h-40">
                     <div className="loading loading-spinner loading-lg"></div>
                 </div>
+                <p className="text-center">
+                    {jobScanStatus === 'processing' ? 'Processing your job scan...' : 'Loading analysis...'}
+                </p>
+            </div>
+        );
+    }
+
+    if (jobScanStatus === 'error') {
+        return (
+            <div className="w-full p-4 mx-auto bg-white border border-1 border-grey rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-2">Resume Analysis</h2>
+                <p className="text-center">
+                   <span className='text-red-500 bg-red-100 p-2 rounded-lg'> There was an error processing your job scan. Please try again.</span>
+                </p>
             </div>
         );
     }
 
     return (
         <div className="w-full p-4 mx-auto bg-white border border-1 border-grey rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-2">Resume Analysis </h2>
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Resume Analysis</h2>
+            </div>
 
             {latestJobScan && (
                 <div className="mb-4 ml-4">
@@ -110,11 +136,11 @@ const ScoreAnalysis = () => {
             <div className='Analysis text-xs'>
                 <h3 className="text-lg font-semibold">Analysis</h3>
                 <br />
-                {/* <p>{latestJobScan.job_analysis || 'No Magic Scan available'}</p> */}
                 {latestJobScan ? (
                     <div className='bg-gray-100 p-4 rounded-lg'>
-                        <p className='whitespace-pre-wrap'>{latestJobScan.job_analysis || 'No analysis available for this job scan.'}</p>
-                    </div>
+                    <ReactMarkdown className='whitespace-pre-wrap'>
+                        {latestJobScan.job_analysis || 'No analysis available for this job scan.'}
+                    </ReactMarkdown>                    </div>
 
                 ) : (
                     <div className="bg-gray-100 p-4 rounded-lg">

@@ -12,9 +12,8 @@ export const ModelProvider = ({ children }) => {
     const [refreshKey, setRefreshKey] = useState(0);
     const [jobScanRefreshKey, setJobScanRefreshKey] = useState(0);
     const [contextLoading, setContextLoading] = useState(true);
-    const [KeyWords, setKeyWords] = useState([]); // TODO: remove this
-    const [Analysis, setAnalysis] = useState(null); // TODO: remove this
     const [latestJobScan, setLatestJobScan] = useState(null);
+    const [jobScanStatus, setJobScanStatus] = useState(null);
 
 
 
@@ -69,14 +68,12 @@ export const ModelProvider = ({ children }) => {
             setRefreshKey,
             contextLoading,
             updateModel,
-            KeyWords,
-            setKeyWords,
-            Analysis, // TODO: remove this
-            setAnalysis,
             latestJobScan,
             setLatestJobScan,
             jobScanRefreshKey,
-            refreshJobScan
+            refreshJobScan,
+            jobScanStatus,
+            setJobScanStatus
         }}>
             {children}
         </ModelContext.Provider>

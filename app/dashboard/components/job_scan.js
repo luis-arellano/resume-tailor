@@ -3,6 +3,7 @@ import { LoadContext } from '../context';
 import apiClient from '@/libs/api';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { ModelContext } from '../context';
+import { useInterval } from '../../hooks/useInterval';
 
 
 const loader = <span className="loading loading-spinner loading-md"></span>
@@ -15,13 +16,12 @@ function JobScan() {
   const [loading, setLoading] = useState(false);
   const [loadingAnalysis, setLoadingAnalysis] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
-  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [resumes, setResumes] = useState([])
-  const { refreshKey, setRefreshKey, selectedModel, setSelectedModel, setKeyWords, setAnalysis, setLatestJobScan, refreshJobScan } = LoadContext();
+  const { refreshKey, setRefreshKey, selectedModel, setSelectedModel, setLatestJobScan, refreshJobScan, jobScanStatus, setJobScanStatus } = LoadContext();
 
   const [resumeFile, setResumeFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
-
+  const [jobScanId, setJobScanId] = useState(null);
 
   const handleResumeSelect = (index) => {
     setSelectedModel(resumes[index]);
@@ -109,6 +109,7 @@ function JobScan() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoadingAnalysis(true);
+    setJobScanStatus('processing');
     const resume_data = JSON.stringify(selectedModel['resume_data']);
 
     try{
@@ -116,15 +117,48 @@ function JobScan() {
       requestForm.append('resume',resume_data);
       requestForm.append('job_description', jobDescription);
       requestForm.append('resume_id', selectedModel.id);
-      const response = await apiClient.post('/resume/evaluate_resume', requestForm);
-      setLatestJobScan(response);
-      refreshJobScan();
+
+      // const response = await apiClient.post('/resume/evaluate_resume', requestForm);
+      const response = await apiClient.post('/resume/new_job_scan', requestForm);
+      setJobScanId(response.job_scan_id);
+      setJobScanStatus('processing');
+
     } catch (error) {
       console.error('Error evaluating resume:', error);
+      setJobScanStatus('error');
     } finally {
       setLoadingAnalysis(false);
     }  
   };
+
+  // Check the status of the job scan every couple of seconds.
+  useInterval(
+    async () => {
+        if (jobScanId) {
+            try {
+                const response = await apiClient.get(`/resume/get_job_scan_status?job_scan_id=${jobScanId}`);
+                setJobScanStatus(response.status);
+                if (response.status === 'completed') {
+                    setLatestJobScan(response.result);
+                    setJobScanId(null);
+                    setLoadingAnalysis(false);
+                }
+                if (response.status === 'error') {
+                  setJobScanId(null);
+                  setLoadingAnalysis(false);
+                }
+            } catch (error) {
+                console.error('Error checking job status:', error);
+                setJobScanStatus('error');
+                setJobScanId(null);
+                setLoadingAnalysis(false);
+            }
+        }
+    },
+    jobScanStatus === 'processing' ? 2500 : null
+);
+
+
 
   return (
     <div className="flex w-full mx-auto bg-white border border-1 border-grey rounded-lg shadow-md">
