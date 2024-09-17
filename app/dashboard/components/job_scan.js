@@ -71,7 +71,7 @@ function JobScan() {
       if (response && response.resume_id) {
         setUploadStatus('Resume upload initiated. Processing...');
         setProcessingResumeId(response.resume_id);
-        setProcessing(true);
+        // setProcessing(true);
         // setUploadStatus('Resume uploaded successfully!');
         // setRefreshKey(prevKey => prevKey + 1); // Update the refreshKey to trigger a refresh
       }
@@ -97,7 +97,8 @@ function JobScan() {
           }
         } catch (error) {
           console.error('Error checking resume status:', error);
-          setProcessing(false);
+          // setProcessing(false);
+          setProcessingResumeId(null);
           setUploadStatus('Error processing resume');
         }
       }
