@@ -22,10 +22,11 @@ function JobScan() {
   const [resumeFile, setResumeFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
   const [jobScanId, setJobScanId] = useState(null);
+  const [processingResumeId, setProcessingResumeId] = useState(null);
+
 
   const handleResumeSelect = (index) => {
     setSelectedModel(resumes[index]);
-
     const supabase = createClientComponentClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
         if (session) {
@@ -64,11 +65,15 @@ function JobScan() {
       formData.append('resume', resumeFile);
 
       // Call the api endpoint
-      const response = await apiClient.post('/resume/post', formData);
+      // const response = await apiClient.post('/resume/post', formData);
+      const response = await apiClient.post('/resume/post_new_resume', formData);
 
-      if (response) {
-        setUploadStatus('Resume uploaded successfully!');
-        setRefreshKey(prevKey => prevKey + 1); // Update the refreshKey to trigger a refresh
+      if (response && response.resume_id) {
+        setUploadStatus('Resume upload initiated. Processing...');
+        setProcessingResumeId(response.resume_id);
+        setProcessing(true);
+        // setUploadStatus('Resume uploaded successfully!');
+        // setRefreshKey(prevKey => prevKey + 1); // Update the refreshKey to trigger a refresh
       }
     }
     catch (error) {
@@ -78,7 +83,27 @@ function JobScan() {
     finally {
       setLoading(false);
     }
-  }
+  };
+
+  useInterval(
+    async () => {
+      if (processingResumeId) {
+        try {
+          const response = await apiClient.get(`/resume/get_resume_status?resume_id=${processingResumeId}`);
+          if (response.status === 'completed') {
+            setProcessingResumeId(null);
+            setUploadStatus('Resume processed successfully!');
+            setRefreshKey(prevKey => prevKey + 1); // Trigger resume list refresh
+          }
+        } catch (error) {
+          console.error('Error checking resume status:', error);
+          setProcessing(false);
+          setUploadStatus('Error processing resume');
+        }
+      }
+    },
+    processingResumeId ? 2000 : null
+  );
 
   const loadResumes = async () => {
     try {
@@ -168,7 +193,7 @@ function JobScan() {
         {/* Container for the upload and list of uploaded resumes */}
         <div id="upload-container" className="relative bg-white p-2 m-2 rounded-lg border flex items-center justify-between">
           <p className="text-sm text-gray-600">
-            {loading ? 'Parsing your resume.' : 'Upload a new resume here'}.</p>
+            {loading ? 'Parsing your resume.' : processingResumeId ? 'Processing your resume.' : 'Upload a new resume here'}.</p>
           <label htmlFor="file-input"
             className="text-xs text-grey border border-black shadow-md
            py-2 px-2 rounded-2xl cursor-pointer hover:duration-500 hover:bg-black hover:text-white">
@@ -177,10 +202,10 @@ function JobScan() {
           <input type="file" className="hidden" id="file-input" onChange={event => handleFileChange(event)} />
 
           {/* Loading Overlay */}
-          {loading && (
+          {(loading || processingResumeId) && (
             <div className="absolute inset-0 border rounded-lg border text-gray-600 text-sm backdrop-blur-md bg-white/30 flex flex-col items-center justify-center">
-              <div className='text-sm'> {loader} Parsing your Resume</div>
-            </div>
+              <div className='text-sm'> {loader} {loading ? 'Uploading' : 'Processing'} your Resume</div>
+              </div>
           )}
 
         </div>
