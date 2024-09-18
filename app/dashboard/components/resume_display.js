@@ -7,6 +7,7 @@ import ResumeControls from './resume_controls';
 import { useReactToPrint } from 'react-to-print';
 import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
+import Image from 'next/image';
 
 /***
  * Renders a resume as a PDF form
@@ -131,7 +132,17 @@ const ResumeDisplay = () => {
   }
 
   if (!editableResume) {
-    return <p>No resume selected</p>;
+    return (
+      <div className='container mx-2'>
+      <div className="m-2 a4-size flex flex-col items-center justify-center bg-gray-50">
+        <h2 className="text-2xl font-semibold text-gray-700 mb-2">No Resume Selected</h2>
+        <p className="text-gray-500 text-center max-w-md">
+        ☝️ First upload a resume
+        </p>
+      </div>
+      </div>
+
+    );
   }
 
   return (

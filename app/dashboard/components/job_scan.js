@@ -4,7 +4,8 @@ import apiClient from '@/libs/api';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { ModelContext } from '../context';
 import { useInterval } from '../../hooks/useInterval';
-
+import { Tooltip } from 'react-tooltip'; // Add this import
+import toast from "react-hot-toast";
 
 const loader = <span className="loading loading-spinner loading-md"></span>
 
@@ -133,6 +134,21 @@ function JobScan() {
 
   // Submit the job description and resume for evaluation
   const handleSubmit = async (event) => {
+
+    if (!selectedModel) {
+      event.preventDefault();
+      // Show an error message
+      toast.error('First Upload and select a Resume',  {
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      }
+      )
+      return;
+    };
+
     event.preventDefault();
     setLoadingAnalysis(true);
     setJobScanStatus('processing');
@@ -194,7 +210,7 @@ function JobScan() {
         {/* Container for the upload and list of uploaded resumes */}
         <div id="upload-container" className="relative bg-white p-2 m-2 rounded-lg border flex items-center justify-between">
           <p className="text-sm text-gray-600">
-            {loading ? 'Parsing your resume.' : processingResumeId ? 'Processing your resume.' : 'Upload a new resume here'}.</p>
+            {loading ? 'Parsing your resume.' : processingResumeId ? 'Please be patient while we parse your resume.' : 'Upload a new resume here'}.</p>
           <label htmlFor="file-input"
             className="text-xs text-grey border border-black shadow-md
            py-2 px-2 rounded-2xl cursor-pointer hover:duration-500 hover:bg-black hover:text-white">
