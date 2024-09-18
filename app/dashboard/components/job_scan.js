@@ -147,7 +147,7 @@ function JobScan() {
       }
       )
       return;
-    };
+    }
 
     event.preventDefault();
     setLoadingAnalysis(true);
