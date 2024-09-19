@@ -9,9 +9,9 @@ const Hero = () => {
     <section className=" max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-20 px-8 py-8 lg:py-20">
 
       {/* Content */}
-      <div className="p-2">
+      <div className="w-full lg:w-auto">
 
-        <div className="flex flex-col gap-10 lg:gap-14 items-center justify-center text-center lg:text-left lg:items-start">
+      <div className="flex flex-col gap-6 lg:gap-14 items-center justify-center text-center lg:text-left lg:items-start">
 
           {/* <a
             // href="https://www.producthunt.com/posts/shipfast-2?utm_source=badge-top-post-badge&utm_medium=badge&utm_souce=badge-shipfast&#0045;2"
@@ -28,26 +28,25 @@ const Hero = () => {
             </svg>
           </a> */}
 
-          <h2 className="font-extrabold text-4xl lg:text-6xl tracking-tight">
-          Don&apos;t let AI reject your resume.
-          <span className="bg-neutral text-neutral-content px-2 md:px-4 ml-1 md:ml-1.5 leading-relaxed whitespace-nowrap">
-            get that interview
-          </span>
-        </h2>
-          <p className="text-lg opacity-80 leading-relaxed">
-          If you&apos;re not using a system to optimize your resume for ATS, you&apos;re already behind.
-          It&apos;s an arms race, and others are already using ATS-optimized resumes to get interviews.
+          <h2 className="font-extrabold text-3xl sm:text-3xl lg:text-6xl tracking-tight">
+              Don&apos;t let AI reject your resume.
+            <span className="bg-neutral text-neutral-content px-2 md:px-4 ml-1 md:ml-1.5 leading-relaxed whitespace-nowrap">
+              get that interview
+            </span>
+          </h2>
+          <p className="text-base sm:text-lg opacity-80 leading-relaxed max-w-prose">
+            If you&apos;re not using a system to optimize your resume for ATS, you&apos;re already behind.
+            It&apos;s an arms race, and others are already using ATS-optimized resumes to get interviews.
+            <span className="sm:hidden"><br /><br /></span>            Don&apos;t be rejected without a human even seing your resume. Your skills deserve to be seen.
+            Let us help you bypass the ATS gatekeepers.
 
-          Don&apos;t be rejected without a human even seing your resume. Your skills deserve to be seen.
-          Let us help you bypass the ATS gatekeepers.
-    
-          From application black hole to interview shortlist. ATS-optimize now.
+            From application black hole to interview shortlist. ATS-optimize now.
           </p>
           {/* <button className="btn btn-primary text-white border-2 border-black">
             Get {config.appName}
           </button> */}
 
-          <ButtonSignin extraStyle="btn btn-primary text-white border-2 border-black"/>            
+          <ButtonSignin extraStyle="btn btn-primary text-white border-2 border-black" />
 
 
           <TestimonialsAvatars priority={true} />
