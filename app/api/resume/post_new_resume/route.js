@@ -45,7 +45,7 @@ export async function POST(req) {
 
         // Trigger Cloud Run process asynchronously
         // const base_url = 'http://127.0.0.1:8080';
-        const base_url = 'https://my-flask-app-110102002651.us-central1.run.app';
+        const base_url = 'https://resume-parser-110102002651.us-central1.run.app'; // New Cloud Run instance
         const response = await fetch(base_url+'/process_resume', {
             method: 'POST',
             headers: {

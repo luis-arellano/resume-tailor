@@ -96,6 +96,19 @@ function JobScan() {
             setUploadStatus('Resume processed successfully!');
             setRefreshKey(prevKey => prevKey + 1); // Trigger resume list refresh
           }
+
+          if (response.status === 'error') {
+            toast.error('Error analyzing resume. Please try again.', {
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+              },
+            });
+            setProcessingResumeId(null);
+            setUploadStatus('Error processing resume');
+          }
+
         } catch (error) {
           console.error('Error checking resume status:', error);
           // setProcessing(false);

@@ -274,6 +274,20 @@ const ResumeDisplay = () => {
               </p>
             </>
           )}
+
+          {editableResume.OtherInformation && editableResume.OtherInformation.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mb-2">Other</h2>
+              <p className="text-sm">
+                {editableResume.OtherInformation.map((info, index) => (
+                  <span key={index}>
+                    {createEditableField(`OtherInformation[${index}]`, '', 'span')}
+                    {index < editableResume.OtherInformation.length - 1 ? ', ' : ''}
+                  </span>
+                ))}
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>
