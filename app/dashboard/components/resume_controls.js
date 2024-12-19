@@ -1,7 +1,8 @@
 import React from 'react';
-import { FaRegArrowAltCircleDown } from 'react-icons/fa';
+import { FaRegArrowAltCircleDown , FaRegTrashAlt} from 'react-icons/fa';
 
-const ResumeControls = ({ onDownload }) => {
+
+const ResumeControls = ({ onDownload, onDelete }) => {
   return (
     <div className="flex justify-end">
       <button
@@ -10,6 +11,13 @@ const ResumeControls = ({ onDownload }) => {
       >
         <FaRegArrowAltCircleDown className="mr-2" />
         Download
+      </button>
+
+      <button
+        onClick={onDelete}
+        className="flex items-center gap-2 px-3 py-1 text-sm text-grey hover:text-red-600 transition-colors duration-200"
+      >
+        <FaRegTrashAlt className="w-4 h-4" />
       </button>
     </div>
   );

@@ -15,7 +15,7 @@ import Image from 'next/image';
  * -download as pdf
  */
 const ResumeDisplay = () => {
-  const { selectedModel, contextLoading, updateModel, latestJobScan } = useContext(ModelContext);
+  const { selectedModel, contextLoading, updateModel, latestJobScan, refreshModels } = useContext(ModelContext);
   const [editableResume, setEditableResume] = useState(selectedModel);
   const refs = useRef({});
   const resumeRef = useRef(null);
@@ -23,7 +23,7 @@ const ResumeDisplay = () => {
   useEffect(() => {
     if (selectedModel) {
       console.log('selectedModel:', selectedModel);
-      setEditableResume(selectedModel.resume_data);
+      setEditableResume(selectedModel?.resume_data);
     }
 
   }, [selectedModel]);
@@ -31,6 +31,20 @@ const ResumeDisplay = () => {
   const handlePrint = useReactToPrint({
     content: () => resumeRef.current,
   });
+
+  const handleDeleteResume = async () => {
+    if (window.confirm('Are you sure you want to delete this resume? This action cannot be undone.')) {
+      try{
+        const response = await apiClient.post(`/resume/delete?resume_id=${selectedModel.id}`);
+        setEditableResume(null); // clear local state
+        updateModel(null); // clear context
+        refreshModels(); // Trigger a refresh of the resume list
+        console.log('response:', response);
+      } catch (err) {
+        console.error('Error deleting resume:', err);
+      }
+    }
+  };
 
   const updateResumeArray = (arrayPath, action, index = null) => {
     const updatedResume = _.cloneDeep(editableResume);
@@ -151,7 +165,7 @@ const ResumeDisplay = () => {
 
       {/* Resume Controls */}
       <section className="bg-white border border-1 border-grey rounded-lg max-w-4xl mb-2 p-2 mx-auto">
-        <ResumeControls onDownload={handlePrint} />
+        <ResumeControls onDownload={handlePrint} onDelete={handleDeleteResume} />
       </section>
 
 

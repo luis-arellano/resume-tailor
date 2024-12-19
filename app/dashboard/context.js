@@ -40,7 +40,11 @@ export const ModelProvider = ({ children }) => {
         } = await supabase.auth.getSession();
 
         if (session) {
-            localStorage.setItem(`selectedModel_${session.user.id}`, JSON.stringify(newModel));
+            if (newModel) {
+                localStorage.removeItem(`selectedModel_${session.user.id}`);
+            } else {
+                localStorage.setItem(`selectedModel_${session.user.id}`, JSON.stringify(newModel));
+            }
         }
     }
 
