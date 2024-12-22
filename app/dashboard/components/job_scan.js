@@ -2,12 +2,10 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 import { LoadContext } from '../context';
 import apiClient from '@/libs/api';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { ModelContext } from '../context';
 import { useInterval } from '../../hooks/useInterval';
-import { Tooltip } from 'react-tooltip'; // Add this import
 import toast from "react-hot-toast";
 
-const loader = <span className="loading loading-spinner loading-md"></span>
+const loader = <span className="loading loading-spinner loading-xs text-xs text-gray-500"></span>
 
 /**
  * Comoponent to Upload Resumes, Job descriptions, and trigger the analysis
@@ -66,15 +64,11 @@ function JobScan() {
       formData.append('resume', resumeFile);
 
       // Call the api endpoint
-      // const response = await apiClient.post('/resume/post', formData);
       const response = await apiClient.post('/resume/post_new_resume', formData);
 
       if (response && response.resume_id) {
         setUploadStatus('Resume upload initiated. Processing...');
-        setProcessingResumeId(response.resume_id);
-        // setProcessing(true);
-        // setUploadStatus('Resume uploaded successfully!');
-        // setRefreshKey(prevKey => prevKey + 1); // Update the refreshKey to trigger a refresh
+        setRefreshKey(prevKey => prevKey + 1); // Trigger resume list refresh
       }
     }
     catch (error) {
@@ -88,41 +82,18 @@ function JobScan() {
 
   useInterval(
     async () => {
-      if (processingResumeId) {
-        try {
-          const response = await apiClient.get(`/resume/get_resume_status?resume_id=${processingResumeId}`);
-          if (response.status === 'completed') {
-            setProcessingResumeId(null);
-            setUploadStatus('Resume processed successfully!');
-            setRefreshKey(prevKey => prevKey + 1); // Trigger resume list refresh
-          }
-
-          if (response.status === 'error') {
-            toast.error('Error analyzing resume. Please try again.', {
-              style: {
-                borderRadius: '10px',
-                background: '#333',
-                color: '#fff',
-              },
-            });
-            setProcessingResumeId(null);
-            setUploadStatus('Error processing resume');
-          }
-
-        } catch (error) {
-          console.error('Error checking resume status:', error);
-          // setProcessing(false);
-          setProcessingResumeId(null);
-          setUploadStatus('Error processing resume');
-        }
+      const processingResumes = resumes.some(resume => resume.status === 'processing');
+      if (processingResumes) {
+        setRefreshKey(prevKey => prevKey + 1);
       }
     },
-    processingResumeId ? 2000 : null
+    resumes.some(resume => resume.status === 'processing') ? 2000 : null
   );
 
   const loadResumes = async () => {
     try {
       const response = await apiClient.get("/resume/get")
+      console.log('get resumes response:', response);
       return response
     } catch (e) {
       console.error(e?.message);
@@ -246,11 +217,18 @@ function JobScan() {
             <li key={index} className="p-2 text-xs rounded-lg border m-1 hover:bg-gray-100">
               <div className="form-control">
                 <label className="label cursor-pointer">
-                  <span className="label-text">{resume.file_name} - {new Date(resume.created_at).toLocaleDateString()}</span>
-                  <input type="radio" name="selected-resume" className="radio radio-sm"
-                       checked={selectedModel ? selectedModel.file_name === resume.file_name: false}
-                       onChange={() => handleResumeSelect(index)}
-                  />
+                  <span className={`label-text ${resume.status === 'processing' ? 'text-gray-400' : ''}`}>
+                    {resume.file_name} - {new Date(resume.created_at).toLocaleDateString()}</span>
+
+                  {resume.status === 'processing' ? loader : (
+                <input 
+                  type="radio" 
+                  name="selected-resume" 
+                  className="radio radio-sm"
+                  checked={selectedModel ? selectedModel.file_name === resume.file_name : false}
+                  onChange={() => handleResumeSelect(index)}
+                    />
+                  )}
                 </label>
               </div>
             </li>
