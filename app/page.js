@@ -18,6 +18,7 @@ export default function Home() {
       <main >
         <Hero />
         <Problem />
+        <Pricing />
         {/* <FeaturesAccordion /> */}
         {/* <Pricing />
         <FAQ />

@@ -15,9 +15,22 @@ export default async function LayoutPrivate({ children }) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // if (!session) {
-  //   redirect(config.auth.loginUrl);
-  // }
+  if (!session) {
+    redirect(config.auth.loginUrl);
+  }
+
+  // Get user's profile to check subscription status
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", session.user.id)
+    .single();
+
+  console.log('PROFILE DATA: ',profile);
+
+  if (!profile?.has_access) {
+    redirect("/pricing"); // Create a pricing page or use your preferred route
+  }
 
   return <>{children}</>;
 }

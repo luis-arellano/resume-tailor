@@ -5,9 +5,9 @@ const config = {
   appName: "Magic Resume",
   // REQUIRED: a short description of your app for SEO tags (can be overwritten)
   appDescription:
-    "The NextJS boilerplate with all you need to build your SaaS, AI tool, or any other web app.",
+    "Optimze your resume to get more interviews.",
   // REQUIRED (no https://, not trialing slash at the end, just the naked domain)
-  domainName: "shipfa.st",
+  domainName: "magic-resume.com",
   crisp: {
     // Crisp website ID. IF YOU DON'T USE CRISP: just remove this => Then add a support email in this config file (mailgun.supportEmail) otherwise customer support won't work.
     id: "",
@@ -21,47 +21,47 @@ const config = {
         // REQUIRED — we use this to find the plan in the webhook (for instance if you want to update the user's credits based on the plan)
         priceId:
           process.env.NODE_ENV === "development"
-            ? "price_1Niyy5AxyNprDp7iZIqEyD2h"
-            : "price_456",
+            ?  "price_1QbCsrBetG2IikeWDwlrrTG1"
+            : "price_1QbBAkBetG2IikeWAP7pUORD",
         //  REQUIRED - Name of the plan, displayed on the pricing page
-        name: "Starter",
+        name: "Quick Boost",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
-        description: "Perfect for small projects",
+        description: "2 Month quick boost plan is perfect for professionals who need a standout resume.",
         // The price you want to display, the one user will be charged on Stripe.
-        price: 79,
+        price: 24,
         // If you have an anchor price (i.e. $29) that you want to display crossed out, put it here. Otherwise, leave it empty
-        priceAnchor: 99,
+        priceAnchor: 80,
         features: [
           {
-            name: "NextJS boilerplate",
+            name: "2 months Access",
           },
-          { name: "User oauth" },
-          { name: "Database" },
-          { name: "Emails" },
+          { name: "Keywords to bypass ATS filters" },
+          { name: "User friendly editing tools" },
+          { name: "ATS friendly resumes." },
         ],
       },
-      {
-        // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
-        isFeatured: true,
-        priceId:
-          process.env.NODE_ENV === "development"
-            ? "price_1O5KtcAxyNprDp7iftKnrrpw"
-            : "price_456",
-        name: "Advanced",
-        description: "You need more power",
-        price: 99,
-        priceAnchor: 149,
-        features: [
-          {
-            name: "NextJS boilerplate",
-          },
-          { name: "User oauth" },
-          { name: "Database" },
-          { name: "Emails" },
-          { name: "1 year of updates" },
-          { name: "24/7 support" },
-        ],
-      },
+      // {
+      //   // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
+      //   isFeatured: true,
+      //   priceId:
+      //     process.env.NODE_ENV === "development"
+      //       ? "price_1O5KtcAxyNprDp7iftKnrrpw"
+      //       : "price_456",
+      //   name: "Advanced",
+      //   description: "You need more power",
+      //   price: 99,
+      //   priceAnchor: 149,
+      //   features: [
+      //     {
+      //       name: "NextJS boilerplate",
+      //     },
+      //     { name: "User oauth" },
+      //     { name: "Database" },
+      //     { name: "Emails" },
+      //     { name: "1 year of updates" },
+      //     { name: "24/7 support" },
+      //   ],
+      // },
     ],
   },
   aws: {

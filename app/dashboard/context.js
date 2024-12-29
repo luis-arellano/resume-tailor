@@ -3,6 +3,7 @@
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import apiClient from '@/libs/api';
 
 export const ModelContext = createContext();
 export const LoadContext = () => useContext(ModelContext);
@@ -14,7 +15,7 @@ export const ModelProvider = ({ children }) => {
     const [contextLoading, setContextLoading] = useState(true);
     const [latestJobScan, setLatestJobScan] = useState(null);
     const [jobScanStatus, setJobScanStatus] = useState(null);
-
+    const [credits, setTotalCredits] = useState(0);
 
 
     const getUserData = async () => {
@@ -28,6 +29,19 @@ export const ModelProvider = ({ children }) => {
         if (storedModel) {
             setSelectedModel(JSON.parse(storedModel));
         }
+
+        // Get User Credits
+        const credits_response = await apiClient.get('/credits/get_credits');
+
+        console.log(credits_response);
+        // If there is no data, it means the user doesn't have a profile,
+        // and needs to first buy credits.
+        if(!credits_response) {
+            return
+        }
+        setTotalCredits(credits_response.data || 0);
+
+        // Why is the loading here?
         setContextLoading(false);
     }
 
@@ -77,7 +91,8 @@ export const ModelProvider = ({ children }) => {
             jobScanRefreshKey,
             refreshJobScan,
             jobScanStatus,
-            setJobScanStatus
+            setJobScanStatus,
+            credits
         }}>
             {children}
         </ModelContext.Provider>
