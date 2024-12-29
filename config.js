@@ -22,7 +22,7 @@ const config = {
         priceId:
           process.env.NODE_ENV === "development"
             ?  "price_1QbCsrBetG2IikeWDwlrrTG1"
-            : "price_1QbISgBetG2IikeWlfSPWF1X" , //"price_1QbBAkBetG2IikeWAP7pUORD",
+            :  "price_1QbBAkBetG2IikeWAP7pUORD",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "Quick Boost",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
