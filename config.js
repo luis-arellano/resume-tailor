@@ -22,18 +22,18 @@ const config = {
         priceId:
           process.env.NODE_ENV === "development"
             ?  "price_1QbCsrBetG2IikeWDwlrrTG1"
-            :  "price_1QbBAkBetG2IikeWAP7pUORD",
+            :  "price_1QbvAiBetG2IikeWdkui2A1x",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "Quick Boost",
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
-        description: "2 Month quick boost plan is perfect for professionals who need a standout resume.",
+        description: "Monthly sprint, perfect for professionals who need a standout resume.",
         // The price you want to display, the one user will be charged on Stripe.
-        price: 24,
+        price: 9,
         // If you have an anchor price (i.e. $29) that you want to display crossed out, put it here. Otherwise, leave it empty
-        priceAnchor: 80,
+        priceAnchor: 24,
         features: [
           {
-            name: "2 months Access",
+            name: "Monthly Subscription",
           },
           { name: "Keywords to bypass ATS filters" },
           { name: "User friendly editing tools" },
