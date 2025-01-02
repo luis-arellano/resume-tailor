@@ -100,7 +100,8 @@ export default function ModernTemplate({
             </section>
           )}
 
-  
+         {/* Languages Section */}
+         {resumeData.Languages && resumeData.Languages.length > 0 && (
             <section>
               <h2 className="font-bold mb-2">Languages</h2>
               <ul className="space-y-1">
@@ -111,6 +112,7 @@ export default function ModernTemplate({
                 ))}
               </ul>
             </section>
+         )}
           </div>
   
           {/* Main content area */}
