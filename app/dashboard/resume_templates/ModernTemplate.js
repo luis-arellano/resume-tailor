@@ -128,7 +128,7 @@ export default function ModernTemplate({
                   <div className="flex justify-between items-baseline">
 
                     {createEditableField(`Experience[${index}].Title`, '', 'h3', 'text-lg ')}
-                    <div className="text-xs text-gray-600">
+                    <div className="text-xs text-gray-600 whitespace-nowrap">
                       {createEditableField(`Experience[${index}].StartDate`, '', 'span')} - {createEditableField(`Experience[${index}].EndDate`, '', 'span')}
                     </div>
                   </div>
