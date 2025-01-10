@@ -33,11 +33,12 @@ const config = {
         priceAnchor: 24,
         features: [
           {
-            name: "Monthly Subscription",
+            name: "Unlimited resume uploads & edits",
           },
-          { name: "Keywords to bypass ATS filters" },
+          { name: "AI keyword suggestions to bypass ATS filters" },
           { name: "User friendly editing tools" },
-          { name: "ATS friendly resumes." },
+          { name: "Ongoing feature updates" },
+          { name: "One-click export to PDF" },
         ],
       },
       // {

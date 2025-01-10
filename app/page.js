@@ -8,6 +8,8 @@ import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import VideoDemo from "@/components/VideoDemo";
+import Testimonials3 from "@/components/Testimonials3";
+import Results from "@/components/Results";
 
 export default function Home() {
   return (
@@ -19,8 +21,11 @@ export default function Home() {
       <main >
         <Hero />
         <Problem />
+        {/* <Testimonials3 /> */}
+        <Results />
         <VideoDemo />
         <Pricing />
+        <FAQ />
         {/* <FeaturesAccordion /> */}
         {/* <Pricing />
         <FAQ />

@@ -29,18 +29,13 @@ const Hero = () => {
           </a> */}
 
           <h2 className="font-extrabold text-3xl sm:text-3xl lg:text-6xl tracking-tight">
-              Don&apos;t let AI reject your resume.
+            Make your Resume imposisble to ignore,
             <span className="bg-neutral text-neutral-content px-2 md:px-4 ml-1 md:ml-1.5 leading-relaxed whitespace-nowrap">
-              get that interview
+             Land Interviews Fast!
             </span>
           </h2>
           <p className="text-base sm:text-lg opacity-80 leading-relaxed max-w-prose">
-            If you&apos;re not using a system to optimize your resume for ATS, you&apos;re already behind.
-            It&apos;s an arms race, and others are already using ATS-optimized resumes to get interviews.
-            <span className="sm:hidden"><br /><br /></span>            Don&apos;t be rejected without a human even seing your resume. Your skills deserve to be seen.
-            Let us help you bypass the ATS gatekeepers.
-
-            From application black hole to interview shortlist. ATS-optimize now.
+            Tired of sending out resumes and hearing nothing back? Magic Resume helps you optimize your resume in 2 minutes so it passes ATS filters—fast.
           </p>
           {/* <button className="btn btn-primary text-white border-2 border-black">
             Get {config.appName}

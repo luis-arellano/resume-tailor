@@ -8,7 +8,19 @@ import { useRef, useState } from "react";
 const faqList = [
   {
     question: "What do I get exactly?",
-    answer: <div className="space-y-2 leading-relaxed">Loreum Ipseum</div>,
+    answer: (
+      <div className="space-y-2 leading-relaxed">
+        <div>
+          You&apos;ll be able to upload your resume and get a virtual resume editor. Afterwards you will be able to:
+        </div>
+        <ul className="list-disc list-inside space-y-1">
+          <li>Upload a job description and get suggested keywords to include in your resume to pass ATS filters.</li>
+          <li>Use the resume editor to quickly visualize keywords.</li>
+          <li>Run an analysis for each job description.</li>
+          <li>Export with one click to PDF.</li>
+        </ul>
+      </div>
+    )
   },
   {
     question: "Can I get a refund?",
@@ -19,6 +31,27 @@ const faqList = [
       </p>
     ),
   },
+  {
+    question: "How many resumes can I upload?",
+    answer: (
+      <p>
+        You can upload as many resumes as you&apos;d like under your subscription.
+        Whether you want to optimize one core resume or create multiple versions
+        for different roles, we&apos;ve got you covered.
+      </p>
+    ),
+  },
+  {
+    question: "Can I cancel anytime?",
+    answer: (
+      <p>
+        Absolutely. You can cancel your subscription at any time. After
+        canceling, you&apos;ll still have access to your account until the end of
+        your current billing period.
+      </p>
+    ),
+  },
+
   {
     question: "I have another question",
     answer: (
