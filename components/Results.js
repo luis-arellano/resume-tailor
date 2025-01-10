@@ -93,7 +93,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
              I tried a couple more times and it kept working. I was shocked.
             The takeaway here is pretty straightforward: If you want your resume to shine, you have to align it with the job description.
           </p>
-          <p>It's not glamorous, but it works.</p>
+          <p>It&apos;s not glamorous, but it works.</p>
         </div>
 
       <div className="max-w-6xl mx-auto px-8">
