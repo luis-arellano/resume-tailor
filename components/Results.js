@@ -22,7 +22,7 @@ const invites = [
   {
     company: "Netflix",
     role: "Software Engineer",
-    img: netflix_interview, // You'll need to add these images
+    img: netflix_interview,
     alt: "Netflix interview invitation email"
   },
   {
@@ -78,7 +78,7 @@ const [isModalOpen, setIsModalOpen] = useState(false);
         <div className="max-w-4xl mx-auto text-lg opacity-90 leading-relaxed mb-12 md:mb-20 px-6">
           <p className="mb-6">
             I had been firing off countless resumes into the black hole of online applications, only to hear crickets.
-            So when I saw a role at OpenAI that was practically tailor-made for my skill set,I knew I needed a different approach.
+            So when I saw a role at OpenAI that was practically tailor-made for my skill set, I knew I needed a different approach.
           </p>
           
           <p className="mb-6">
