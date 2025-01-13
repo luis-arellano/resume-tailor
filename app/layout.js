@@ -5,6 +5,7 @@ import ClientLayout from "@/components/LayoutClient";
 import config from "@/config";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react"
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }) {
       {config.domainName && (
         <head>
           <PlausibleProvider domain={config.domainName} />
+          <GoogleAnalytics />
         </head>
       )}
       <body>
