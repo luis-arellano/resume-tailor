@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaRegArrowAltCircleDown , FaRegTrashAlt} from 'react-icons/fa';
+import { FaRegArrowAltCircleDown, FaRegTrashAlt} from 'react-icons/fa';
 import { TEMPLATES } from '../resume_templates';
 
 
@@ -25,6 +25,18 @@ const ResumeControls = ({ onDownload, onDelete, selectedTemplate, onTemplateChan
           ))}
         </select>
       </div>
+
+      {/* ENABLE WHEN WE'RE READY FOR THE REWRITE FEATURE */}
+      {/* <div className="flex items-center gap-2">
+        <button
+          onClick={onRewriteResume}
+          className="btn-special flex items-center"
+        >
+          <FaPenFancy className="mr-2" />
+          Magic Rewrite
+        </button>
+
+      </div> */}
 
       <div className="flex items-center gap-2">
         <button
