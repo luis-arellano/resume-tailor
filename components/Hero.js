@@ -29,7 +29,7 @@ const Hero = () => {
           </a> */}
 
           <h2 className="font-extrabold text-3xl sm:text-3xl lg:text-6xl tracking-tight">
-            Make your Resume imposisble to ignore,
+            Make your Resume impossible to ignore,
             <span className="bg-neutral text-neutral-content px-2 md:px-4 ml-1 md:ml-1.5 leading-relaxed whitespace-nowrap">
              Land Interviews Fast!
             </span>
