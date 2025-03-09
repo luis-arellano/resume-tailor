@@ -6,6 +6,7 @@ import config from "@/config";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react"
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import RedditPixel from "@/components/RedditPixel";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
         <head>
           <GoogleAnalytics />
           <PlausibleProvider domain={config.domainName} />
+          <RedditPixel />
         </head>
       )}
       <body>
