@@ -3,7 +3,7 @@
 import { useState } from "react";
 import apiClient from "@/libs/api";
 import config from "@/config";
-import { trackEvent } from "@/app/RedditPiexel";
+import { trackRedditEvent } from "./RedditPixel";
 
 // This component is used to create Stripe Checkout Sessions
 // It calls the /api/stripe/create-checkout route with the priceId, successUrl and cancelUrl
