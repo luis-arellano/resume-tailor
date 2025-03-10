@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import { SupabaseClient } from "@supabase/supabase-js";
 import configFile from "@/config";
 import { findCheckoutSession } from "@/libs/stripe";
+import { sendRedditConversion } from "@/libs/reddit";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -68,6 +69,18 @@ export async function POST(req) {
         // } catch (e) {
         //   console.error("Email issue:" + e?.message);
         // }
+
+        // Send Reddit conversion event
+        try {
+          await sendRedditConversion('Purchase', {
+            value: (session?.amount_total || 0) / 100,
+            currency: (session?.currency || 'USD').toUpperCase(),
+            transaction_id: session?.id || data.object.id // Fallback to the webhook event ID
+          });
+        } catch (redditError) {
+          // Handle Reddit conversion error separately so it doesn't affect the main webhook flow
+          console.error('Failed to track Reddit conversion:', redditError);
+        }
 
         break;
       }
