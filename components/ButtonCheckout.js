@@ -3,6 +3,7 @@
 import { useState } from "react";
 import apiClient from "@/libs/api";
 import config from "@/config";
+import { trackEvent } from "@/app/RedditPiexel";
 
 // This component is used to create Stripe Checkout Sessions
 // It calls the /api/stripe/create-checkout route with the priceId, successUrl and cancelUrl
@@ -26,6 +27,12 @@ const ButtonCheckout = ({ priceId, mode = "payment" }) => {
     } catch (e) {
       console.error(e);
     }
+
+    // Track checkout initiation
+    trackRedditEvent('InitiateCheckout', {
+      value: priceId,
+      currency: 'USD'
+    });
 
     setIsLoading(false);
   };

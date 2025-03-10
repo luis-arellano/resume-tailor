@@ -4,6 +4,13 @@ import Script from 'next/script';
 
 const redditPixelId = 'a2_gac5vp85s6mi';
 
+// Helper function to call rdt safely
+const trackEvent = (eventName, params = {}) => {
+  if (typeof window !== 'undefined' && window.rdt) {
+    window.rdt('track', eventName, params);
+  }
+};
+
 export default function RedditPixel() {
   return (
     <>

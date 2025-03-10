@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import config from "@/config";
+import { trackEvent } from "@/app/RedditPiexel";
 
 // A simple button to sign in with our providers (Google & Magic Links).
 // It automatically redirects user to callbackUrl (config.auth.callbackUrl) after login, which is normally a private page for users to manage their accounts.
@@ -12,6 +13,10 @@ import config from "@/config";
 const ButtonSignin = ({ text = "Get started", extraStyle }) => {
   const supabase = createClientComponentClient();
   const [user, setUser] = useState(null);
+
+  const handleSignInClick = () => {
+    trackRedditEvent('SignUpStart');
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -52,6 +57,7 @@ const ButtonSignin = ({ text = "Get started", extraStyle }) => {
     <Link
       className={`btn ${extraStyle ? extraStyle : ""}`}
       href={config.auth.loginUrl}
+      onClick={handleSignInClick}
     >
       {text}
     </Link>
