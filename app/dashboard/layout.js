@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import config from "@/config";
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import SideMenu from "./components/side_menu";
+import DashboardHeader from "./components/header";
 
 // This is a server-side component to ensure the user is logged in.
 // If not, it will redirect to the login page.
@@ -32,5 +34,19 @@ export default async function LayoutPrivate({ children }) {
     redirect("/pricing"); // Create a pricing page or use your preferred route
   }
 
-  return <>{children}</>;
+  return (
+    <div className="flex flex-col h-screen">
+      <header className="w-full">
+        <DashboardHeader />
+      </header>
+      <div className="flex flex-1 overflow-hidden">
+        <aside className="h-full">
+          <SideMenu />
+        </aside>
+        <main className="flex-1 overflow-auto">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
 }

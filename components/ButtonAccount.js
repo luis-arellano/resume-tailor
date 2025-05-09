@@ -52,25 +52,27 @@ const ButtonAccount = () => {
     <Popover className="relative z-10">
       {({ open }) => (
         <>
-          <Popover.Button className="btn">
+          <Popover.Button className="flex items-center gap-2 px-2 py-1 text-sm hover:bg-gray-100 rounded-md">
             {user?.user_metadata?.avatar_url ? (
               <img
                 src={user?.user_metadata?.avatar_url}
                 alt={"Profile picture"}
-                className="w-6 h-6 rounded-full shrink-0"
+                className="w-5 h-5 rounded-full shrink-0"
                 referrerPolicy="no-referrer"
-                width={24}
-                height={24}
+                width={20}
+                height={20}
               />
             ) : (
-              <span className="w-8 h-8 bg-base-100 flex justify-center items-center rounded-full shrink-0 capitalize">
+              <span className="w-5 h-5 bg-gray-100 flex justify-center items-center rounded-full shrink-0 capitalize text-xs">
                 {user?.email?.charAt(0)}
               </span>
             )}
 
-            {user?.user_metadata?.name ||
-              user?.email?.split("@")[0] ||
-              "Account"}
+            <span className="text-sm">
+              {user?.user_metadata?.name ||
+                user?.email?.split("@")[0] ||
+                "Account"}
+            </span>
 
             {isLoading ? (
               <span className="loading loading-spinner loading-xs"></span>
@@ -79,7 +81,7 @@ const ButtonAccount = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
-                className={`w-5 h-5 duration-200 opacity-50 ${
+                className={`w-4 h-4 duration-200 opacity-50 ${
                   open ? "transform rotate-180 " : ""
                 }`}
               >
@@ -99,18 +101,18 @@ const ButtonAccount = () => {
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-95 opacity-0"
           >
-            <Popover.Panel className="absolute left-0 z-10 mt-3 w-screen max-w-[16rem] transform">
-              <div className="overflow-hidden rounded-xl shadow-xl ring-1 ring-base-content ring-opacity-5 bg-base-100 p-1">
+            <Popover.Panel className="absolute right-0 z-10 mt-2 w-48 transform">
+              <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white p-1">
                 <div className="space-y-0.5 text-sm">
                   <button
-                    className="flex items-center gap-2 hover:bg-base-300 duration-200 py-1.5 px-4 w-full rounded-lg font-medium"
+                    className="flex items-center gap-2 hover:bg-gray-100 duration-200 py-1.5 px-3 w-full rounded-md font-medium"
                     onClick={handleBilling}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                       fill="currentColor"
-                      className="w-5 h-5"
+                      className="w-4 h-4"
                     >
                       <path
                         fillRule="evenodd"
@@ -121,14 +123,14 @@ const ButtonAccount = () => {
                     Billing
                   </button>
                   <button
-                    className="flex items-center gap-2 hover:bg-error/20 hover:text-error duration-200 py-1.5 px-4 w-full rounded-lg font-medium"
+                    className="flex items-center gap-2 hover:bg-red-50 hover:text-red-600 duration-200 py-1.5 px-3 w-full rounded-md font-medium"
                     onClick={handleSignOut}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                       fill="currentColor"
-                      className="w-5 h-5"
+                      className="w-4 h-4"
                     >
                       <path
                         fillRule="evenodd"

@@ -4,6 +4,7 @@ import apiClient from '@/libs/api';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useInterval } from '../../hooks/useInterval';
 import toast from "react-hot-toast";
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const loader = <span className="loading loading-spinner loading-xs text-xs text-gray-500"></span>
 
@@ -22,7 +23,7 @@ function JobScan() {
   const [jobDescription, setJobDescription] = useState('');
   const [jobScanId, setJobScanId] = useState(null);
   const [processingResumeId, setProcessingResumeId] = useState(null);
-
+  const [isListCollapsed, setIsListCollapsed] = useState(true);
 
   const handleResumeSelect = (index) => {
     setSelectedModel(resumes[index]);
@@ -32,7 +33,8 @@ function JobScan() {
             localStorage.setItem(`selectedModel_${session.user.id}`, JSON.stringify(resumes[index]));
         }
     });
-};
+    setIsListCollapsed(true);
+  };
 
   const handleFileChange = (event) => {
     setLoading(true);
@@ -184,7 +186,25 @@ function JobScan() {
     jobScanStatus === 'processing' ? 2500 : null
 );
 
+  const toggleResumesList = () => {
+    setIsListCollapsed(!isListCollapsed);
+  };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!isListCollapsed) {
+      const handleClickOutside = (event) => {
+        if (!event.target.closest('.resume-dropdown-container')) {
+          setIsListCollapsed(true);
+        }
+      };
+      
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isListCollapsed]);
 
   return (
     <div className="flex w-full mx-auto bg-white border border-1 border-grey rounded-lg shadow-md">
@@ -206,35 +226,56 @@ function JobScan() {
           {(loading || processingResumeId) && (
             <div className="absolute inset-0 border rounded-lg border text-gray-600 text-sm backdrop-blur-md bg-white/30 flex flex-col items-center justify-center">
               <div className='text-sm'> {loader} {loading ? 'Uploading' : 'Processing'} your Resume</div>
-              </div>
+            </div>
           )}
-
         </div>
 
-        {/* List of Uploaded resumes */}
-        <ul className="overflow-y-auto m-2">
-          {resumes.map((resume, index) => (
-            <li key={index} className="p-2 text-xs rounded-lg border m-1 hover:bg-gray-100">
-              <div className="form-control">
-                <label className="label cursor-pointer">
-                  <span className={`label-text ${resume.status === 'processing' ? 'text-gray-400' : ''}`}>
-                    {resume.file_name} - {new Date(resume.created_at).toLocaleDateString()}</span>
+        {/* Selected Resume Dropdown - Container with relative positioning */}
+        <div className="relative resume-dropdown-container m-2">
+          {/* Dropdown Trigger */}
+          <div 
+            onClick={toggleResumesList} 
+            className="flex items-center justify-between p-2 bg-white rounded-lg border cursor-pointer hover:bg-gray-50"
+          >
+            <div className="flex items-center">
+              <span className="text-sm text-gray-700 mr-2">Selected Resume:</span>
+              <span className="text-xs font-medium text-gray-900 truncate max-w-[180px]">
+                {selectedModel ? selectedModel.file_name : 'None selected'}
+              </span>
+            </div>
+            <div className="text-gray-500">
+              {isListCollapsed ? <FaChevronDown size={14} /> : <FaChevronUp size={14} />}
+            </div>
+          </div>
 
-                  {resume.status === 'processing' ? loader : (
-                <input 
-                  type="radio" 
-                  name="selected-resume" 
-                  className="radio radio-sm"
-                  checked={selectedModel ? selectedModel.file_name === resume.file_name : false}
-                  onChange={() => handleResumeSelect(index)}
-                    />
-                  )}
-                </label>
-              </div>
-            </li>
-          ))}
-        </ul>
+          {/* Dropdown Content - Absolutely positioned */}
+          {!isListCollapsed && (
+            <div className="absolute z-10 mt-1 w-full bg-white rounded-lg border shadow-lg">
+              <ul className="max-h-[250px] overflow-y-auto">
+                {resumes.map((resume, index) => (
+                  <li key={index} className="p-2 text-xs border-b last:border-b-0 hover:bg-gray-100">
+                    <div className="form-control">
+                      <label className="label cursor-pointer">
+                        <span className={`label-text ${resume.status === 'processing' ? 'text-gray-400' : ''}`}>
+                          {resume.file_name} - {new Date(resume.created_at).toLocaleDateString()}</span>
 
+                        {resume.status === 'processing' ? loader : (
+                          <input 
+                            type="radio" 
+                            name="selected-resume" 
+                            className="radio radio-sm"
+                            checked={selectedModel ? selectedModel.file_name === resume.file_name : false}
+                            onChange={() => handleResumeSelect(index)}
+                          />
+                        )}
+                      </label>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Container for the job description and Magic Scan */}
@@ -246,7 +287,7 @@ function JobScan() {
               value={jobDescription}
               onChange={handleJobDescriptionChange}
               placeholder="Paste the job description here..."
-              rows={10}
+              rows={1}
               className="mt-1 block w-full 
               px-3 py-2 border border-gray-300 
               rounded-md shadow-sm 
@@ -257,7 +298,7 @@ function JobScan() {
           </label>
         </div>
         <div>
-          {/* TODO Fix the style here. I don't like it */}
+          {/* Original button style */}
           <button type="submit" className="btn-special"> Magic Resume
             {loadingAnalysis ? loader : ''}</button>
         </div>
