@@ -99,7 +99,15 @@ const ScoreAnalysis = () => {
 
             {latestJobScan && (
                 <div className="mb-4 ml-4">
-                    <h3 className="text-lg font-semibold">Composite Score</h3>
+                    <div className="flex items-center">
+                        <h3 className="text-lg font-semibold">Composite Score</h3>
+                        <div className="relative group ml-2">
+                            <FaInfoCircle className="text-gray-400 hover:text-gray-600 cursor-pointer" />
+                            <div className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded p-2 w-48 z-10 -left-16 top-6">
+                                Try to get more than 60 in score for best results.
+                            </div>
+                        </div>
+                    </div>
                     <div className="text-3xl font-bold text-green-600">{compositeScore}</div>
                     <p className="text-sm text-gray-400">
                         Matched {matchedKeywords.length} out of {latestJobScan.keywords ? latestJobScan.keywords.split(', ').length : 0} keywords
