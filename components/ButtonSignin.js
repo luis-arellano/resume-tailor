@@ -15,7 +15,7 @@ const ButtonSignin = ({ text = "Get started", extraStyle }) => {
   const [user, setUser] = useState(null);
 
   const handleSignInClick = () => {
-    trackRedditEvent('SignUpStart');
+    trackRedditEvent('SignUp');
   };
 
   useEffect(() => {

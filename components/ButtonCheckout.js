@@ -31,7 +31,9 @@ const ButtonCheckout = ({ priceId, mode = "payment" }) => {
     // Track checkout initiation
     trackRedditEvent('InitiateCheckout', {
       value: priceId,
-      currency: 'USD'
+      currency: 'USD',
+      content_ids: [priceId],
+      content_type: 'product',
     });
 
     setIsLoading(false);
