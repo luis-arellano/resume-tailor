@@ -256,10 +256,20 @@ function JobScan() {
                   <li key={index} className="p-2 text-xs border-b last:border-b-0 hover:bg-gray-100">
                     <div className="form-control">
                       <label className="label cursor-pointer">
-                        <span className={`label-text ${resume.status === 'processing' ? 'text-gray-400' : ''}`}>
-                          {resume.file_name} - {new Date(resume.created_at).toLocaleDateString()}</span>
+                        <span className={`label-text ${
+                          resume.status === 'processing' ? 'text-gray-400' : 
+                          resume.status === 'error' ? 'text-red-300' : ''
+                        }`}>
+                          {resume.file_name} - {new Date(resume.created_at).toLocaleDateString()}
+                          {(resume.status === 'error') && (
+                            <span className="ml-1 text-red-300 font-medium">(Error)</span>
+                          )}
+                        </span>
 
-                        {resume.status === 'processing' ? loader : (
+                        {resume.status === 'processing' ? loader : 
+                         (resume.status === 'error') ? (
+                          <span className="text-red-500 text-xs">⚠️</span>
+                         ) : (
                           <input 
                             type="radio" 
                             name="selected-resume" 
