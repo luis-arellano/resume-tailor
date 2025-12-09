@@ -61,7 +61,7 @@ export async function POST(request) {
     const fileBase64 = Buffer.from(fileBuffer).toString('base64');
 
     // Trigger Cloud Run process asynchronously
-    const base_url = 'https://resume-parser-110102002651.us-central1.run.app';
+    const base_url = 'https://magic-resume-backend-110102002651.us-central1.run.app';
     const response = await fetch(base_url + '/process_resume', {
       method: 'POST',
       headers: {
