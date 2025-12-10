@@ -96,7 +96,7 @@ export default function Resumes() {
   const handleDelete = async (resumeId) => {
     if (window.confirm('Are you sure you want to delete this resume? This action cannot be undone.')) {
       try {
-        await apiClient.post(`/resume/delete?resume_id=${resumeId}`);
+        await apiClient.delete(`/resumes/${resumeId}`);
         setResumes(resumes.filter(resume => resume.id !== resumeId));
       } catch (error) {
         console.error('Error deleting resume:', error);
