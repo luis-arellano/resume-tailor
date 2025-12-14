@@ -29,8 +29,11 @@ export default function JobApplications() {
   const [selectedJobDescription, setSelectedJobDescription] = useState(null);
   const [updatingStatus, setUpdatingStatus] = useState(null);
   const [updateError, setUpdateError] = useState(null);
+  const [deleting, setDeleting] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
   const supabase = createClientComponentClient();
   const dropdownRef = useRef(null);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -107,8 +110,41 @@ export default function JobApplications() {
     }
   };
 
+  const handleDelete = async (scanId) => {
+    try {
+      setDeleting(scanId);
+      setDeleteError(null);
+
+      const response = await fetch(`/api/job_scans/${scanId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.error?.message || 'Failed to delete job application');
+      }
+
+      // Refresh the job scans data after successful deletion
+      await fetchJobScans();
+    } catch (error) {
+      console.error('Error deleting job application:', error);
+      setDeleteError({ 
+        scanId, 
+        message: error.message || 'Failed to delete. Please try again.',
+        details: error.details
+      });
+    } finally {
+      setDeleting(null);
+    }
+  };
+
   const clearError = (scanId) => {
     setUpdateError(null);
+    setDeleteError(null);
   };
 
   const getStatusIcon = (status) => {
@@ -121,14 +157,21 @@ export default function JobApplications() {
   const JobDescriptionModal = () => {
     if (!selectedJobDescription) return null;
 
+    const handleBackdropClick = (e) => {
+      // Close the modal if clicking the backdrop (not the modal content)
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        setSelectedJobDescription(null);
+      }
+    };
+
     return (
-      <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="fixed inset-0 z-50 overflow-y-auto" onClick={handleBackdropClick}>
         <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
           <div className="fixed inset-0 transition-opacity" aria-hidden="true">
             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
           </div>
           <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-          <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+          <div ref={modalRef} className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
             <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-medium text-gray-900">Job Description</h3>
@@ -276,12 +319,29 @@ export default function JobApplications() {
                         </button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <button 
-                          className="p-2 hover:bg-gray-100 rounded-md"
-                          onClick={() => window.location.href = `/dashboard?job_scan_id=${scan.id}`}
-                        >
-                          <EyeIcon className="w-4 h-4 text-gray-500" />
-                        </button>
+                        <div className="flex space-x-2">
+                          <button 
+                            className="p-2 hover:bg-gray-100 rounded-md"
+                            onClick={() => window.location.href = `/dashboard?job_scan_id=${scan.id}`}
+                          >
+                            <EyeIcon className="w-4 h-4 text-gray-500" />
+                          </button>
+                          <button 
+                            className="p-2 hover:bg-gray-100 rounded-md hover:bg-red-50"
+                            onClick={() => handleDelete(scan.id)}
+                            disabled={deleting === scan.id}
+                          >
+                            {deleting === scan.id ? 
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-500"></div> :
+                              <TrashIcon className="w-4 h-4 text-red-500" />
+                            }
+                          </button>
+                          {deleteError?.scanId === scan.id && (
+                            <div className="absolute mt-8 bg-red-50 text-red-600 text-xs p-2 rounded-md shadow-md">
+                              <span>{deleteError.message}</span>
+                            </div>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
