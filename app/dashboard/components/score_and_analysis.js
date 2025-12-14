@@ -48,7 +48,8 @@ const ScoreAnalysis = () => {
             // const scoreRegex = /\*\*Score:?\s*(\d+)\*\*/g;
             const scoreRegex = /(?:Score:?\s*|Score\s*[:-]?\s*)(\d+)(?:\s*\/\s*5|\s*out of\s*5)?/gi;
 
-            const scores = [...latestJobScan.job_analysis.matchAll(scoreRegex)].map(match => parseInt(match[1]));
+            const scores = latestJobScan.job_analysis ? 
+                [...latestJobScan.job_analysis.matchAll(scoreRegex)].map(match => parseInt(match[1])) : [];
             setDetailedScores(scores);
 
             // Calculate composite score
