@@ -75,7 +75,9 @@ export async function POST(req) {
           await sendRedditConversion('Purchase', {
             value: (session?.amount_total || 0) / 100,
             currency: (session?.currency || 'USD').toUpperCase(),
-            transaction_id: session?.id || data.object.id // Fallback to the webhook event ID
+            transaction_id: session?.id || data.object.id, // Fallback to the webhook event ID
+            content_ids: [session?.line_items?.data[0]?.price.id],
+            content_type: 'product',
           });
         } catch (redditError) {
           // Handle Reddit conversion error separately so it doesn't affect the main webhook flow
