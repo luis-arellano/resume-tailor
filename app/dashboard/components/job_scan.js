@@ -146,7 +146,6 @@ function JobScan() {
         resume_id: selectedModel.id
       }
 
-      // const response = await apiClient.post('/resume/evaluate_resume', requestForm);
       const response = await apiClient.post('/job_scans', requestBody);
       setJobScanId(response.data.id);
       setJobScanStatus('processing');

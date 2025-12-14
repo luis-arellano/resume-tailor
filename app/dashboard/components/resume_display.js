@@ -126,10 +126,9 @@ const ResumeDisplay = () => {
 
   const saveResumeToBackend = async (updatedResume) => {
     try {
-      const formData = new FormData();
-      formData.append('resume_json', JSON.stringify(updatedResume));
-      formData.append('resume_id', selectedModel.id)
-      const response = await apiClient.post('/resume/update_resume', formData);
+      const response = await apiClient.put(`/resumes/${selectedModel.id}`, {
+        resume_data: updatedResume
+      });
       console.log('back end response:', response);
 
     } catch (err) {
