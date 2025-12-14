@@ -22,8 +22,9 @@ const ScoreAnalysis = () => {
 
             setIsLoading(true);
             try {
-                const response = await apiClient.get(`/resume/get_latest_scan?resumeId=${selectedModel.id}`);
-                setLatestJobScan(response);
+                const response = await apiClient.get(`/job_scans?resume_id=${selectedModel.id}&sort=created_at&order=desc&limit=1`);
+                const latestScan = response.data && response.data.length >0 ? response.data[0] : null;
+                setLatestJobScan(latestScan);
             } catch (error) {
                 console.error('Error fetching job scan:', error);
             } finally {
@@ -51,6 +52,14 @@ const ScoreAnalysis = () => {
             const scores = latestJobScan.job_analysis ? 
                 [...latestJobScan.job_analysis.matchAll(scoreRegex)].map(match => parseInt(match[1])) : [];
             setDetailedScores(scores);
+
+            console.log('🧮 Score calculation debug:', {
+                matchedKeywords,
+                matchedLength: matchedKeywords.length,
+                keywords,
+                keywordsLength: keywords.length,
+                latestJobScan
+              });
 
             // Calculate composite score
             const keywordScore = (matchedKeywords.length / keywords.length) * 100;

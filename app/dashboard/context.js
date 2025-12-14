@@ -55,9 +55,9 @@ export const ModelProvider = ({ children }) => {
 
         if (session) {
             if (newModel) {
-                localStorage.removeItem(`selectedModel_${session.user.id}`);
-            } else {
                 localStorage.setItem(`selectedModel_${session.user.id}`, JSON.stringify(newModel));
+            } else {
+                localStorage.removeItem(`selectedModel_${session.user.id}`);
             }
         }
     }

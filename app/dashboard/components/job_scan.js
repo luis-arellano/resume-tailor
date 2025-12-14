@@ -138,17 +138,17 @@ function JobScan() {
     event.preventDefault();
     setLoadingAnalysis(true);
     setJobScanStatus('processing');
-    const resume_data = JSON.stringify(selectedModel['resume_data']);
 
     try{
-      const requestForm = new FormData();
-      requestForm.append('resume',resume_data);
-      requestForm.append('job_description', jobDescription);
-      requestForm.append('resume_id', selectedModel.id);
+      const requestBody = {
+        resume: selectedModel['resume_data'],
+        job_description: jobDescription,
+        resume_id: selectedModel.id
+      }
 
       // const response = await apiClient.post('/resume/evaluate_resume', requestForm);
-      const response = await apiClient.post('/resume/new_job_scan', requestForm);
-      setJobScanId(response.job_scan_id);
+      const response = await apiClient.post('/job_scans', requestBody);
+      setJobScanId(response.data.id);
       setJobScanStatus('processing');
 
     } catch (error) {
@@ -164,14 +164,14 @@ function JobScan() {
     async () => {
         if (jobScanId) {
             try {
-                const response = await apiClient.get(`/resume/get_job_scan_status?job_scan_id=${jobScanId}`);
-                setJobScanStatus(response.status);
-                if (response.status === 'completed') {
-                    setLatestJobScan(response.result);
+                const response = await apiClient.get(`/job_scans/${jobScanId}`);
+                setJobScanStatus(response.data.status);
+                if (response.data.status === 'completed') {
+                    setRefreshKey(prevKey => prevKey + 1); // Triggers refresh in context
                     setJobScanId(null);
                     setLoadingAnalysis(false);
                 }
-                if (response.status === 'error') {
+                if (response.data.status === 'error') {
                   setJobScanId(null);
                   setLoadingAnalysis(false);
                 }
@@ -183,7 +183,7 @@ function JobScan() {
             }
         }
     },
-    jobScanStatus === 'processing' ? 2500 : null
+    jobScanStatus === 'processing' ? 2500 : null // trigger polling every 2.5 seconds while job is processing
 );
 
   const toggleResumesList = () => {

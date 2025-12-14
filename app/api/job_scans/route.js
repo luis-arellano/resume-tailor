@@ -43,6 +43,7 @@ export async function GET(request) {
     const order = searchParams.get('order') || 'desc';
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '30');
+    const resume_id = searchParams.get('resume_id');
     const offset = (page - 1) * limit;
 
     // Build the query
@@ -54,6 +55,11 @@ export async function GET(request) {
     // Apply filters
     if (status) {
       query = query.eq('application_status', status);
+    }
+
+    // apply resume_id filter
+    if (resume_id) {
+      query = query.eq('resume_id', resume_id);
     }
 
     // Apply sorting
@@ -101,18 +107,19 @@ export async function POST(request) {
     }
 
     // Get the request body
-    const jobScan = await request.json();
-    
-    if (!jobScan) {
-      return errorResponse('No job scan data provided', 400);
+    // const jobScan = await request.json();
+    const {resume, job_description, resume_id} = await request.json();
+
+    if (!resume || !job_description || !resume_id) {
+      return errorResponse('Missing required fields', 400);
     }
 
     // Add user_id and timestamps
     const newJobScan = {
-      ...jobScan,
       user_id: user.id,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      resume_id: resume_id,
+      job_description: job_description,
+      status: 'processing',
     };
 
     // Create the job scan
@@ -125,6 +132,33 @@ export async function POST(request) {
     if (error) {
       console.error('Error creating job scan:', error);
       return errorResponse('Failed to create job scan', 500);
+    }
+
+    // Trigger Cloud Run Evaluation
+
+    const cloud_run_url = 'https://magic-resume-backend-110102002651.us-central1.run.app';
+    const response = await fetch(`${cloud_run_url}/evaluate_resume`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.GOOGLE_CLOUD_API_KEY
+      },
+      body: JSON.stringify({
+        job_scan_id: data.id,
+        resume: JSON.stringify(resume),
+        job_description: job_description,
+        resume_id: resume_id,
+        user_id: user.id
+      })
+    });
+    console.log('Cloud Run request sent:', {
+      url: `${cloud_run_url}/evaluate_resume`,
+      jobScanId: data.id,
+      responseStatus: response.status
+    });
+
+    if (!response.ok) {
+      throw new Error(`Cloud Run request failed with status ${response.status}`);
     }
 
     return successResponse(data);
