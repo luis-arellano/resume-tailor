@@ -17,6 +17,24 @@ progress::-webkit-progress-value {
   @apply text-xs border border-black  bg-white shadow-md py-2 px-2 rounded-2xl cursor-pointer hover:duration-500 hover:bg-black hover:text-white;
 }
 
+/* BRUTALIST BUTTON - Bumble/Robinhood style with thick border and shadow */
+.btn-brutalist {
+  @apply border-2 border-black font-bold;
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-brutalist:hover {
+  @apply border-2 border-black font-bold;
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.btn-brutalist:active {
+  transform: translate(0px, 0px);
+  box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 1);
+}
+
 @layer base {
   .btn-gradient {
     @apply !bg-gradient !bg-[length:300%_300%] hover:saturate-[1.2] shadow duration-100 !border-0 !border-transparent !bg-transparent animate-shimmer disabled:!bg-none disabled:!bg-gray-500/30  !text-white;

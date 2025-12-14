@@ -41,7 +41,7 @@ const Hero = () => {
             Get {config.appName}
           </button> */}
 
-          <ButtonSignin extraStyle="btn btn-primary text-white border-2 border-black" />
+          <ButtonSignin extraStyle="btn btn-primary btn-brutalist text-white" />
 
 
           <TestimonialsAvatars priority={true} />
