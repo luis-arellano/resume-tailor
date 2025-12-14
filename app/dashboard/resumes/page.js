@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import apiClient from "@/libs/api";
 import toast from "react-hot-toast";
+import { useInterval } from "../../hooks/useInterval";
 import { 
   DocumentIcon, 
   EyeIcon, 
@@ -16,34 +17,45 @@ export default function Resumes() {
   const [uploadLoading, setUploadLoading] = useState(false);
   const supabase = createClientComponentClient();
 
-  useEffect(() => {
-    const fetchResumes = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-          const response = await apiClient.get('/resumes');
-          if (response) {
-            // Sort resumes by created_at date, most recent first
-            const sortedResumes = [...response].sort((a, b) => 
-              new Date(b.created_at) - new Date(a.created_at)
-            );
-            setResumes(sortedResumes);
-          } else {
-            console.log('No valid data found in response');
-            setResumes([]);
-          }
+  const fetchResumes = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const response = await apiClient.get('/resumes');
+        if (response) {
+          // Sort resumes by created_at date, most recent first
+          const sortedResumes = [...response].sort((a, b) => 
+            new Date(b.created_at) - new Date(a.created_at)
+          );
+          setResumes(sortedResumes);
+        } else {
+          console.log('No valid data found in response');
+          setResumes([]);
         }
-      } catch (error) {
-        console.error('Error fetching resumes:', error);
-        setResumes([]);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching resumes:', error);
+      setResumes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchResumes();
   }, [supabase]);
+
+  // Long polling for processing resumes
+  useInterval(
+    async () => {
+      const processingResumes = resumes.some(resume => resume.status === 'processing');
+      if (processingResumes) {
+        await fetchResumes();
+      }
+    },
+    resumes.some(resume => resume.status === 'processing') ? 2000 : null
+  );
 
   const handleFileChange = async (event) => {
     setUploadLoading(true);
@@ -53,7 +65,7 @@ export default function Resumes() {
         const formData = new FormData();
         formData.append('resume', uploadedFile);
 
-        const response = await apiClient.post('/resume/post_new_resume', formData);
+        const response = await apiClient.post('/resumes', formData);
         if (response && response.resume_id) {
           toast.success('Resume upload initiated. Processing...', {
             style: {
@@ -62,12 +74,8 @@ export default function Resumes() {
               color: '#fff',
             },
           });
-          // Refresh the resumes list and maintain sorting
-          const updatedResumes = await apiClient.get('/resumes');
-          const sortedResumes = [...updatedResumes].sort((a, b) => 
-            new Date(b.created_at) - new Date(a.created_at)
-          );
-          setResumes(sortedResumes);
+          // Refresh the resumes list
+          await fetchResumes();
         }
       } catch (error) {
         console.error('Error uploading file:', error);
@@ -164,25 +172,37 @@ export default function Resumes() {
               <div
                 key={resume.id}
                 className={`flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors shadow-sm ${
-                  resume.status === 'processing' ? 'opacity-50' : ''
+                  resume.status === 'processing' ? 'opacity-50' : 
+                  resume.status === 'error' ? 'border-red-200 bg-red-50' : ''
                 }`}
               >
                 <div className="flex items-center gap-4 min-w-0 flex-1">
                   <div className="flex-shrink-0 w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                     {resume.status === 'processing' ? (
                       <span className="loading loading-spinner loading-xs text-gray-500"></span>
+                    ) : resume.status === 'error' ? (
+                      <span className="text-red-500 text-lg">⚠️</span>
                     ) : (
                       <DocumentIcon className="w-5 h-5 text-gray-500" />
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className={`font-medium text-sm truncate ${resume.status === 'processing' ? 'text-gray-400' : ''}`}>
+                    <h3 className={`font-medium text-sm truncate ${
+                      resume.status === 'processing' ? 'text-gray-400' : 
+                      resume.status === 'error' ? 'text-red-600' : ''
+                    }`}>
                       {resume.file_name || 'Untitled Resume'}
+                      {resume.status === 'error' && (
+                        <span className="ml-2 text-red-500 font-medium">(Error)</span>
+                      )}
                     </h3>
                     <p className="text-xs text-gray-500 truncate">
                       {new Date(resume.created_at).toLocaleDateString()}
                       {resume.status === 'processing' && (
                         <span className="ml-2 text-blue-500">Processing...</span>
+                      )}
+                      {resume.status === 'error' && (
+                        <span className="ml-2 text-red-500">Failed to process</span>
                       )}
                     </p>
                   </div>

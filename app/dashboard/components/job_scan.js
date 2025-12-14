@@ -66,7 +66,7 @@ function JobScan() {
       formData.append('resume', resumeFile);
 
       // Call the api endpoint
-      const response = await apiClient.post('/resume/post_new_resume', formData);
+      const response = await apiClient.post('/resumes', formData);
 
       if (response && response.resume_id) {
         setUploadStatus('Resume upload initiated. Processing...');
