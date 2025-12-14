@@ -38,7 +38,7 @@ const ResumeDisplay = () => {
   const handleDeleteResume = async () => {
     if (window.confirm('Are you sure you want to delete this resume? This action cannot be undone.')) {
       try{
-        const response = await apiClient.post(`/resume/delete?resume_id=${selectedModel.id}`);
+        const response = await apiClient.delete(`/resumes/${selectedModel.id}`);
         setEditableResume(null); // clear local state
         updateModel(null); // clear context
         refreshModels(); // Trigger a refresh of the resume list
