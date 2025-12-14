@@ -94,7 +94,7 @@ function JobScan() {
 
   const loadResumes = async () => {
     try {
-      const response = await apiClient.get("/resume/get")
+      const response = await apiClient.get("/resumes/")
       console.log('get resumes response:', response);
       return response
     } catch (e) {

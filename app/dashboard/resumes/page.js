@@ -22,7 +22,7 @@ export default function Resumes() {
         const { data: { user } } = await supabase.auth.getUser();
         
         if (user) {
-          const response = await apiClient.get('/resume/get');
+          const response = await apiClient.get('/resumes');
           if (response) {
             // Sort resumes by created_at date, most recent first
             const sortedResumes = [...response].sort((a, b) => 
@@ -63,7 +63,7 @@ export default function Resumes() {
             },
           });
           // Refresh the resumes list and maintain sorting
-          const updatedResumes = await apiClient.get('/resume/get');
+          const updatedResumes = await apiClient.get('/resumes');
           const sortedResumes = [...updatedResumes].sort((a, b) => 
             new Date(b.created_at) - new Date(a.created_at)
           );
