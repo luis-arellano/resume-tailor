@@ -163,7 +163,13 @@ const ResumeDisplay = () => {
   };
 
   if (contextLoading) {
-    return <p>Loading...</p>;
+    return (<div className='container mx-2'>
+    <div className="m-2 a4-size flex flex-col items-center justify-center bg-gray-50">
+      <h2 className="text-2xl font-semibold text-gray-700 mb-2">Loading...</h2>
+      <p className="text-gray-500 text-center max-w-md">
+      </p>
+    </div>
+    </div>);
   }
 
   if (!editableResume) {
