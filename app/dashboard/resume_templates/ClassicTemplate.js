@@ -5,9 +5,12 @@ export default function ClassicTemplate({
   resumeData, 
   refs,
   createEditableField,
+  createFormattedField,
   handleDelete,
   addItem,
 }) {
+  // Backward compatibility: use createEditableField if createFormattedField not provided
+  const formatField = createFormattedField || createEditableField;
   // Your existing template code here
   return (
 
@@ -43,7 +46,7 @@ export default function ClassicTemplate({
 
                     {createEditableField(`Experience[${index}].Company`, '', 'h3', 'text-lg font-semibold')}
                     <div className="text-xs text-gray-600">
-                      {createEditableField(`Experience[${index}].StartDate`, '', 'span')} - {createEditableField(`Experience[${index}].EndDate`, '', 'span')}
+                      {formatField(`Experience[${index}].StartDate`, '', 'span', '', true)} - {formatField(`Experience[${index}].EndDate`, '', 'span', '', true)}
                     </div>
                   </div>
                   {createEditableField(`Experience[${index}].Title`, '', 'h4', 'italic text-base text-gray-800')}
@@ -83,6 +86,40 @@ export default function ClassicTemplate({
             </>
           )}
 
+          {resumeData.Projects && resumeData.Projects.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mb-2">Projects</h2>
+              {resumeData.Projects.map((project, index) => (
+                <div key={index} className="mb-4 group">
+                  <div className="flex justify-between items-baseline">
+                    {createEditableField(`Projects[${index}].Name`, '', 'h3', 'text-sm font-semibold')}
+                    <div className="flex items-center gap-2">
+                      <div className="text-xs text-gray-600">
+                        {createEditableField(`Projects[${index}].Duration`, '', 'span')}
+                      </div>
+                      <button
+                        onClick={() => handleDelete('Projects', index)}
+                        className="text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <FaRegTrashAlt className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                  {createEditableField(`Projects[${index}].Description`, '', 'p', 'text-sm')}
+                </div>
+              ))}
+              <button
+                onClick={() => addItem('Projects')}
+                className="no-print text-sm mb-2 hover:text-blue-500 transition-colors duration-200 flex items-center opacity-20 hover:opacity-100"
+              >
+                <span className="no-print inline-flex items-center justify-center w-3 h-3 mr-2 border border-blue-500 rounded-full">
+                  <FaPlus className="w-2 h-2" />
+                </span>
+                Add Project
+              </button>
+            </>
+          )}
+
           {resumeData.Education && resumeData.Education.length > 0 && (
             <>
               <h2 className="text-xl font-semibold mb-2">Education</h2>
@@ -90,7 +127,7 @@ export default function ClassicTemplate({
                 <div key={index} className="mb-4">
                   <div className="flex justify-between items-baseline">
                     {createEditableField(`Education[${index}].School`, '', 'h3', 'text-sm font-semibold')}
-                    {createEditableField(`Education[${index}].Date`, '', 'span', 'text-xs text-gray-600')}
+                    {formatField(`Education[${index}].Date`, '', 'span', 'text-xs text-gray-600', true)}
                   </div>
                   {createEditableField(`Education[${index}].Degree`, '', 'p', 'text-sm')}
                 </div>

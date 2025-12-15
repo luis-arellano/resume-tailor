@@ -10,11 +10,13 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChartBarIcon,
-  PencilSquareIcon
+  PencilSquareIcon,
+  PlusCircleIcon
 } from "@heroicons/react/24/outline";
 
 const navigation = [
-  { name: "Editor", href: "/dashboard", icon: PencilSquareIcon },
+  // { name: "Editor", href: "/dashboard", icon: PencilSquareIcon },
+  { name: "New Job Application", href: "/dashboard/new-job-application", icon: PlusCircleIcon },
   { name: "Resumes", href: "/dashboard/resumes", icon: DocumentTextIcon },
   { name: "Job Applications", href: "/dashboard/job_applications", icon: BriefcaseIcon },
   { name: "Analytics", href: "/dashboard/analytics", icon: ChartBarIcon },

@@ -80,6 +80,12 @@ progress::-webkit-progress-value {
   background-color: #e2f0cb; /* Light green background for screen view */
 }
 
+/* Vertical text orientation for collapsed sidebar */
+.writing-mode-tb {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
 @media print {
   .no-print {
     display: none;

@@ -146,9 +146,13 @@ function JobScan() {
         resume_id: selectedModel.id
       }
 
-      const response = await apiClient.post('/job_scans', requestBody);
+      const response = await apiClient.post('/job-scans-v2', requestBody);      
       setJobScanId(response.data.id);
       setJobScanStatus('processing');
+      
+      // NEW: Store tailored resume ID for future use
+      // response.data.tailored_resume_id is available here
+
 
     } catch (error) {
       console.error('Error evaluating resume:', error);
