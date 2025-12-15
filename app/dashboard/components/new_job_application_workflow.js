@@ -367,7 +367,7 @@ const NewJobApplicationWorkflow = forwardRef((props, ref) => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mb-4"></div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">Creating Your Tailored Resume</h3>
             <p className="text-sm text-gray-600 max-w-md text-center">
-              We're analyzing the job description and creating a customized version of your resume. 
+              We&apos;re analyzing the job description and creating a customized version of your resume. 
               This usually takes a few seconds...
             </p>
           </div>

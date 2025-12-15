@@ -146,7 +146,7 @@ export default function MasterResumeSelector({ selectedResume, onResumeSelect })
               </span>
             </div>
             <p className="text-xs text-green-600 mt-1">
-              We're processing your resume. This usually takes 30-60 seconds.
+              We&apos;re processing your resume. This usually takes 30-60 seconds.
             </p>
           </div>
         )}
