@@ -99,13 +99,21 @@ progress::-webkit-progress-value {
   }
 }
 
-@media print {
+@media print {  
   .a4-size {
     box-shadow: none; /* Removes shadow when printing */
     overflow: visible;
     width: 100%;
     height: auto; /* Allow height to adjust to content */
     min-height: 0; /* Remove min-height for printing */
-    padding: 6mm; /* Remove padding for printing */
+    /* padding: 6mm; */
+    margin: 0 !important; /* Remove all margins for printing */
+  }
+  
+  /* Remove container margins and padding for print */
+  .container {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
   }
 }

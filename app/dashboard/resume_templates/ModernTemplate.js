@@ -5,6 +5,7 @@ import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 export default function ModernTemplate({ 
     resumeData, 
     refs,
+    resumeRef,
     createEditableField,
     createFormattedField,
     handleDelete,
@@ -13,7 +14,7 @@ export default function ModernTemplate({
     // Backward compatibility: use createEditableField if createFormattedField not provided
     const formatField = createFormattedField || createEditableField;
     return (
-      <div className="a4-size">
+      <div className="a4-size" ref={resumeRef}>
         {/* Header with two columns */}
         <div className="grid grid-cols-3 gap-4 p-8 bg-zinc-200">
           {/* Left column */}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { FaDownload, FaEye, FaEdit, FaCheck, FaTimes, FaFileAlt, FaBuilding, FaBriefcase, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaDownload, FaEye, FaEdit, FaCheck, FaTimes, FaFileAlt, FaBuilding, FaBriefcase, FaChevronLeft, FaChevronRight, FaCodeBranch } from 'react-icons/fa';
 import _ from 'lodash';
 import apiClient from '@/libs/api';
 import { useReactToPrint } from 'react-to-print';
@@ -344,10 +344,17 @@ export default function TailoredResumeEditor({ tailoredResume, jobScan, onResume
       <div className="bg-white rounded-lg shadow-sm border p-4">
         {/* Job Info and Controls */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+
           <div className="flex items-center space-x-4">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Tailored Resume Editor
-            </h2>
+
+          <div className="flex items-center space-x-1">
+            <FaCodeBranch className="h-3 w-3 text-gray-500" />
+            <span className="text-sm font-bold text-gray-500">Tailored Resume</span>
+          </div>
+
+          <span className="text-sm text-gray-500">|</span>
+
+
             {/* Job Info */}
             <div className="flex items-center space-x-3 text-sm">
               {/* Company */}
@@ -664,10 +671,11 @@ export default function TailoredResumeEditor({ tailoredResume, jobScan, onResume
 
         {/* Resume Editor */}
         <div className="flex-1 bg-white rounded-lg shadow-sm border overflow-y-auto">
-          <div className="p-6" ref={resumeRef}>
+          <div className="p-6">
             <TemplateComponent
               resumeData={editableResumeData}
               refs={refs}
+              resumeRef={resumeRef}
               createEditableField={createEditableField}
               createFormattedField={createFormattedField}
               handleDelete={handleDelete}

@@ -4,6 +4,7 @@ import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 export default function ClassicTemplate({ 
   resumeData, 
   refs,
+  resumeRef,
   createEditableField,
   createFormattedField,
   handleDelete,
@@ -17,7 +18,7 @@ export default function ClassicTemplate({
     <div className='container mx-2'>
 
 
-      <div className="a4-size">
+      <div className="a4-size" ref={resumeRef}>
 
         <div className="flex bg-zinc-50 p-4 mb-4">
           {/* <!-- Left Column for Name and Position --> */}

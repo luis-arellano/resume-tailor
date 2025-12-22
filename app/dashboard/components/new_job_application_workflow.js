@@ -299,6 +299,15 @@ const NewJobApplicationWorkflow = forwardRef((props, ref) => {
       case WORKFLOW_STATES.SETUP:
         return (
           <div className="space-y-6">
+            {/* Instructions */}
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">New Job Application</h2>
+              <p className="text-sm text-gray-600 max-w-2xl mx-auto">
+                Create a tailored resume for your job application. Select a master resume template, 
+                paste the job description, and customize your resume for this specific role.
+              </p>
+            </div>
+            
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Master Resume Selection */}
               <div className="bg-white rounded-lg shadow-sm border p-6">
