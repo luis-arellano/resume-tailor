@@ -483,7 +483,7 @@ export default function TailoredResumeEditor({ tailoredResume, jobScan, onResume
             {/* Download Button */}
             <button
               onClick={handlePrint}
-              className="flex items-center space-x-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+              className="flex text-xs items-center space-x-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
             >
               <FaDownload className="h-4 w-4" />
               <span>Download PDF</span>
